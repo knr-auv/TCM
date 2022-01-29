@@ -1,0 +1,4 @@
+#define TASK_SYSTEM_PERIOD_HZ       5
+#define TASK_READ_ANALOG_SENSORS_HZ 10
+#define TASK_TELEMETRY_DEBUG_HZ     10
+#define TASK_PID_HZ                 100
