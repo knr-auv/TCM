@@ -267,9 +267,9 @@ void initTIM1(void)
     TIM1->CCER |= TIM_CCER_CC3E;
     //channel 4 enable:
     TIM1->CCER |= TIM_CCER_CC4E;
-    //84Mhz
-    TIM1->PSC = 210 - 1;  // counter count every 1 microsecond (typically 1 step is 1 [us] long but for better resolution and easier Dshot implementation it is 0.5 [us]. Notice that lowest motor_value 2000 step is still 1 [ms] long as in typical PWM)
-    TIM1->ARR = 2000 - 1; // 1 period of PWM frequency is set to 400 Hz
+    //Clock is 168 MHz
+    TIM1->PSC = 168 - 1;  // counter count every 1 microsecond (typically 1 step is 1 [us] long but for better resolution and easier Dshot implementation it is 0.5 [us]. Notice that lowest motor_value 2000 step is still 1 [ms] long as in typical PWM)
+    TIM1->ARR = 2500 - 1; // 1 period of PWM frequency is set to 400 Hz
 
     TIM1->CCR1 = 1500; // PWM length channel 1 (1 [ms])
     TIM1->CCR2 = 1500; // PWM length channel 2 (1 [ms])
@@ -315,8 +315,8 @@ void initTIM3(void)
     //channel 4 enable:
     TIM3->CCER |= TIM_CCER_CC4E;
     //84Mhz
-    TIM3->PSC = 105 - 1;  // 
-    TIM3->ARR = 2000 - 1; // 
+    TIM3->PSC = 84 - 1;  // ticke per us
+    TIM3->ARR = 2500 - 1; //  count to 2500us (it gives 400Hz)
 
     TIM3->CCR1 = 1500; // PWM length channel 1 (1 [ms])
     TIM3->CCR2 = 1500; // PWM length channel 2 (1 [ms])
