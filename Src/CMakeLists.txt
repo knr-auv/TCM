@@ -5,17 +5,22 @@ drivers/USART1.c
 drivers/USART3.c
 drivers/USART2.c
 drivers/SPI3.c
+
 Sensors/BNO080/bno080.c
 Sensors/BNO080/hw.c
 Sensors/UM7/UM7.c
 Sensors/analog_sensors.c
 
 helpers/quaternions.c
+helpers/PID.c
+helpers/common.c
 
 scheduler/scheduler.c
 tasks/tasks.c
 
-flight/PID.c
+Config/Limits.c
+
+flight/ControlLoop.c
 flight/IMU.c
 
 telemetry/telemetry_debug.c
@@ -27,7 +32,8 @@ main.c
 time/time.c
 IO/LED.c
 IO/thrusters.c
-IO/controls.c
+IO/Control.c
+IO/Sticks.c
 
 
 PARENT_SCOPE

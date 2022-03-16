@@ -54,8 +54,8 @@ set(CMAKE_EXE_LINKER_FLAGS "${LD_flags}")
 
 target_link_libraries(${TARGET_ELF} PUBLIC "${CMAKE_SOURCE_DIR}/Drivers/CMSIS/libarm_cortexM4lf_math.a")
 target_link_libraries(${TARGET_ELF} PUBLIC c m)
-message(STATUS  "${OBJCOPY}")
 
+set(OBJCOPY arm-none-eabi-objcopy)
 add_custom_target(${TARGET_BIN} ALL COMMAND ${OBJCOPY} -O binary -S ${BUILD_DIR}/${TARGET_ELF}  ${BUILD_DIR}/${TARGET_BIN})
 add_custom_target(${TARGET_HEX} ALL COMMAND ${OBJCOPY} -O ihex -S ${BUILD_DIR}/${TARGET_ELF}  ${BUILD_DIR}/${TARGET_HEX})
 

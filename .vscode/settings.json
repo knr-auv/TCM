@@ -6,7 +6,12 @@
         "quaternions.h": "c",
         "usart3.h": "c",
         "pid.h": "c",
-        "imu.h": "c"
+        "imu.h": "c",
+        "tasks_config.h": "c",
+        "thrusters.h": "c",
+        "time.h": "c",
+        "controlloop.h": "c",
+        "usart1.h": "c"
     },
     //"cortex-debug.stm32cubeprogrammer": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
 }

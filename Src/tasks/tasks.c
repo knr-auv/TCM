@@ -6,7 +6,7 @@
 #include "tasks_config.h"
 #include "Sensors/analog_sensors.h"
 #include "telemetry/telemetry_debug.h"
-#include "flight/PID.h"
+#include "flight/ControlLoop.h"
 
 void taskFun1(timeUs_t t)
 {
@@ -42,8 +42,8 @@ task_t tasks[TASK_COUNT] = {
 			.staticPriority = TASK_PRIORITY_LOW},
 	[TASK_PID] =
 		{
-			.taskName = "PID_TASK",
-			.taskFun = PID_TaskFun,
+			.taskName = "CONTROL_LOOP_TASK",
+			.taskFun = CL_TaskFun,
 			.desiredPeriod = TASK_PERIOD_HZ(TASK_PID_HZ),
 			.staticPriority = TASK_PRIORITY_REALTIME
 		},

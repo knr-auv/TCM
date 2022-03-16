@@ -3,7 +3,7 @@
 #include "tasks/tasks.h"
 #include "Sensors/analog_sensors.h"
 #include "flight/IMU.h"
-#include "flight/PID.h"
+#include "flight/ControlLoop.h"
 #include "drivers/USART1.h"
 
 void init(void)
@@ -11,7 +11,7 @@ void init(void)
     initSystem();
     ANALOG_Enable();
     IMU_Init();
-    PID_Init();
+    CL_Init();
     
     initScheduler();
     initTasks();
@@ -24,7 +24,6 @@ int main(void)
 
     while(1)
     {
-       
         scheduler();
     }
 }
