@@ -6,7 +6,8 @@
 #include "tasks_config.h"
 #include "Sensors/analog_sensors.h"
 #include "telemetry/telemetry_debug.h"
-#include "flight/ControlLoop.h"
+#include "operation/ControlLoop.h"
+#include "operation/systemControl.h"
 
 void taskFun1(timeUs_t t)
 {
@@ -48,12 +49,12 @@ task_t tasks[TASK_COUNT] = {
 			.staticPriority = TASK_PRIORITY_REALTIME
 		},
 
-	[TASK_T2] =
+	[TASK_SYSTEM_CONTROL] =
 		{
-			.taskName = "Task 2",
-			.taskFun = taskFun2,
-			.desiredPeriod = TASK_PERIOD_HZ(2),
-			.staticPriority = TASK_PRIORITY_LOW}};
+			.taskName = "SYSTEM CONTROL TASK",
+			.taskFun = SYSCTRL_Task,
+			.desiredPeriod = TASK_PERIOD_HZ(TASK_SYSTEM_CTRL_HZ),
+			.staticPriority = TASK_PRIORITY_HIGH}};
 
 void initTasks(void)
 {
@@ -61,5 +62,5 @@ void initTasks(void)
 	enableTask(TASK_READ_ANALOG_SENSORS, true);
 	enableTask(TASK_TELEMETRY_DEBUG, true);
 	enableTask(TASK_PID, true);
-	enableTask(TASK_T2, true);
+	enableTask(TASK_SYSTEM_CONTROL, true);
 }

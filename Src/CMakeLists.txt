@@ -14,14 +14,17 @@ Sensors/analog_sensors.c
 helpers/quaternions.c
 helpers/PID.c
 helpers/common.c
+helpers/comunication_protocol.c
 
 scheduler/scheduler.c
 tasks/tasks.c
 
 Config/Limits.c
 
-flight/ControlLoop.c
-flight/IMU.c
+operation/ControlLoop.c
+operation/IMU.c
+operation/systemControl.c
+operation/DirectThrustersCtrl.c
 
 telemetry/telemetry_debug.c
 
@@ -32,7 +35,7 @@ main.c
 time/time.c
 IO/LED.c
 IO/thrusters.c
-IO/Control.c
+
 IO/Sticks.c
 
 
