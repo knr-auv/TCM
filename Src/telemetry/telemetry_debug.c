@@ -1,8 +1,8 @@
 #include <string.h>
 #include "telemetry_debug.h"
-#include "flight/ControlLoop.h"
+#include "operation/ControlLoop.h"
 #include "Sensors/analog_sensors.h"
-#include "flight/IMU.h"
+#include "operation/IMU.h"
 #include "helpers/quaternions.h"
 #include "drivers/USART1.h"
 

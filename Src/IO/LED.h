@@ -1,3 +1,4 @@
+#pragma once
 #include <stdbool.h>
 
 void LED_Green_Toggle(void);

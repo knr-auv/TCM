@@ -2,8 +2,8 @@
 #include "scheduler/scheduler.h"
 #include "tasks/tasks.h"
 #include "Sensors/analog_sensors.h"
-#include "flight/IMU.h"
-#include "flight/ControlLoop.h"
+#include "operation/IMU.h"
+#include "operation/ControlLoop.h"
 #include "drivers/USART1.h"
 
 void init(void)

@@ -11,7 +11,8 @@ float* IMU_GetAngVelPointer()
 }
 bool IMU_Init()
 {
-    UM7_Init();
+    return UM7_Init();
+    
 }
 bool IMU_NewData()
 {

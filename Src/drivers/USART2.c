@@ -15,6 +15,8 @@ static bool shouldRxStop = false;
 
 static uint16_t skippedFrames = 0;
 
+__attribute__ ((weak)) void USART2_RC_Complete_Callback(){};
+
 bool USART2_NewData(void){
     bool ret = new_data;
     new_data=false;

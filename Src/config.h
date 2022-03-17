@@ -1,3 +1,5 @@
+#pragma once
+
 #define USART1_BAUD 115200
 #define USART1_RX_BUFFER_SIZE   252
 
