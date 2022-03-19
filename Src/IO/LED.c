@@ -10,8 +10,8 @@ void LED_Red_Toggle(void){
 }
 
 void LED_Green_Set(bool state){
-    GPIOSetPin(GPIOC,GPIO_ODR_ODR_8,state);
+    GPIOSetPin(GPIOC,8,state);
 }
 void LED_Red_Set(bool state){
-        GPIOSetPin(GPIOD,GPIO_ODR_ODR_11,state);
+        GPIOSetPin(GPIOD,11,state);
 }

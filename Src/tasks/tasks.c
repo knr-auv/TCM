@@ -54,7 +54,15 @@ task_t tasks[TASK_COUNT] = {
 			.taskName = "SYSTEM CONTROL TASK",
 			.taskFun = SYSCTRL_Task,
 			.desiredPeriod = TASK_PERIOD_HZ(TASK_SYSTEM_CTRL_HZ),
-			.staticPriority = TASK_PRIORITY_HIGH}};
+			.staticPriority = TASK_PRIORITY_HIGH},
+	[TASK_LED_TEST] = 
+		{
+			.taskName = "TASK_LED_TEST",
+			.taskFun = taskFun1,
+			.desiredPeriod = TASK_PERIOD_HZ(5),
+			.staticPriority = TASK_PRIORITY_HIGH
+		}
+	};
 
 void initTasks(void)
 {
@@ -63,4 +71,6 @@ void initTasks(void)
 	enableTask(TASK_TELEMETRY_DEBUG, true);
 	enableTask(TASK_PID, true);
 	enableTask(TASK_SYSTEM_CONTROL, true);
+	enableTask(TASK_LED_TEST, true);
+	//enableTask(TASK_SYSTEM_CONTROL, true);
 }
