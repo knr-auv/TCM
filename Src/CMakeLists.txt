@@ -4,7 +4,10 @@ drivers/GPIO.c
 drivers/USART1.c
 drivers/USART3.c
 drivers/USART2.c
+drivers/SPI2.c
 drivers/SPI3.c
+drivers/SST25_flash/SST25_flash.c
+drivers/SST25_flash/SST25_platform.c
 
 Sensors/BNO080/bno080.c
 Sensors/BNO080/hw.c
@@ -20,6 +23,7 @@ scheduler/scheduler.c
 tasks/tasks.c
 
 Config/Limits.c
+Config/memory.c
 
 operation/ControlLoop.c
 operation/IMU.c

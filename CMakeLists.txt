@@ -59,5 +59,5 @@ set(OBJCOPY arm-none-eabi-objcopy)
 add_custom_target(${TARGET_BIN} ALL COMMAND ${OBJCOPY} -O binary -S ${BUILD_DIR}/${TARGET_ELF}  ${BUILD_DIR}/${TARGET_BIN})
 add_custom_target(${TARGET_HEX} ALL COMMAND ${OBJCOPY} -O ihex -S ${BUILD_DIR}/${TARGET_ELF}  ${BUILD_DIR}/${TARGET_HEX})
 
-add_dependencies(${TARGET_BIN} ${TARGET_ELF})
+add_dependencies(${TARGET_BIN} ${TARGET_ELF} ${TARGET_HEX})
 

@@ -4,8 +4,8 @@
 #include "Sensors/analog_sensors.h"
 #include "operation/IMU.h"
 #include "operation/ControlLoop.h"
-#include "drivers/USART1.h"
-
+#include "IO/LED.h"
+#include "Config/memory.h"
 void init(void)
 {
     initSystem();
@@ -19,9 +19,13 @@ void init(void)
 
 int main(void)
 {
-    init();
     
+    init();
+    LED_Red_Set(false);
 
+    if(MEM_Init())
+        LED_Red_Set(true);
+        
     while(1)
     {
         scheduler();

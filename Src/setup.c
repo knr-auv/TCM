@@ -119,6 +119,27 @@ static void initGPIO(void)
     /* onboard analog sensors */
     GPIOA->MODER |= (GPIO_MODER_MODER0 | GPIO_MODER_MODER1); //temperature and humidity sensor  -   analog mode
 
+    /* external flash module SPI2*/
+
+    GPIOE->MODER |= GPIO_MODER_MODER7_0;      //PE7 nCE
+    GPIOD->MODER |= GPIO_MODER_MODER10_0;     //PD10 nHOLD
+
+    GPIOB->MODER |=GPIO_MODER_MODER12_0|GPIO_MODER_MODER13_1|GPIO_MODER_MODER14_1|GPIO_MODER_MODER15_1;      //PB12 nWP
+    //B13 - checked, B14 miso
+    GPIOB->AFR[1] |= 5<<20;
+    GPIOB->AFR[1] |= (5<<24)|(5<<28);
+
+    //GPIOC->MODER |= GPIO_MODER_MODER10_1|GPIO_MODER_MODER11_1|GPIO_MODER_MODER12_1; //PC10 clk, PC11 miso, PC12 mosi
+    //alternate function 6 for pin C10,11,12
+
+    /*BNO080 spi3*/
+    GPIOC->MODER |= GPIO_MODER_MODER10_1|GPIO_MODER_MODER11_1|GPIO_MODER_MODER12_1;
+    GPIOC->OSPEEDR |= 
+	GPIO_OSPEEDER_OSPEEDR10_1 | GPIO_OSPEEDER_OSPEEDR10_0 |
+	GPIO_OSPEEDER_OSPEEDR11_1 | GPIO_OSPEEDER_OSPEEDR11_0 |
+	GPIO_OSPEEDER_OSPEEDR12_1 | GPIO_OSPEEDER_OSPEEDR12_0;
+    GPIOC->AFR[1] &= ~0x000FFF00;
+	GPIOC->AFR[1] |= 0x00066600;
 }
 static uint8_t APBAHBPrescTable[16] = {0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 4, 6, 7, 8, 9};
 
@@ -227,20 +248,38 @@ void initINT(void)
     NVIC_SetPriority(EXTI9_5_IRQn, 0);
     /*-------------------------*/
 }
+void initSPI1(void)
+{
+    RCC->APB1ENR |= RCC_APB2ENR_SPI1EN;
+    //setup clock polarity
+    SPI2->CR1 &= (uint32_t)(0x0);
+    SPI2->CR1 |= SPI_CR1_MSTR|SPI_CR1_SSI | SPI_CR1_SSM;//|SPI_CR1_CPOL;
+    SPI2->CR1 &= ~(SPI_CR1_RXONLY); // RXONLY = 0, full-duplex
+
+    SPI2->CR1 |= (SPI_CR1_BR_2);
+    SPI2->CR1 |= SPI_CR1_SPE;
+}
+void initSPI2(void)
+{
+    RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
+    //setup clock polarity
+    SPI2->CR1 &= (uint32_t)(0x0);
+    SPI2->CR1 |= SPI_CR1_MSTR|SPI_CR1_SSI | SPI_CR1_SSM|SPI_CR1_CPOL|SPI_CR1_CPHA;
+    SPI2->CR1 &= ~(SPI_CR1_RXONLY); // RXONLY = 0, full-duplex
+
+    SPI2->CR1 |= (SPI_CR1_BR_2);
+    SPI2->CR1 |= SPI_CR1_SPE;
+}
 void initSPI3(void)
 {
     RCC->APB1ENR |= RCC_APB1ENR_SPI3EN;
     //setup clock polarity
     SPI3->CR1 &= (uint32_t)(0x0);
-    SPI3->CR1 |= SPI_CR1_CPHA | SPI_CR1_CPOL;
-    //setup master mode
-    SPI3->CR1 |= (SPI_CR1_MSTR); // Master Mode
-    //APB1 - 42Mhz w want 42/16 = 2.625 Mhz good
-    SPI3->CR1 |= (SPI_CR1_BR_0 | SPI_CR1_BR_1);
-    SPI3->CR1 |= SPI_CR1_SSI | SPI_CR1_SSM;
+    //SPI3->CR1 |= SPI_CR1_CPHA | SPI_CR1_CPOL;
+    SPI3->CR1 |= SPI_CR1_MSTR|SPI_CR1_SSI | SPI_CR1_SSM|SPI_CR1_CPOL;
     SPI3->CR1 &= ~(SPI_CR1_RXONLY); // RXONLY = 0, full-duplex
-                                    //
-    SPI3->CR2 = 0;
+
+    SPI3->CR1 |= (SPI_CR1_BR_2);
     SPI3->CR1 |= SPI_CR1_SPE;
 }
 
@@ -373,6 +412,7 @@ void initSystem()
     TicksInit();
     initRCC();
     initGPIO();
+    initSPI2();
     //initSPI3();
     initUSART1();
     initUSART2();

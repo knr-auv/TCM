@@ -13,7 +13,8 @@
         "controlloop.h": "c",
         "usart1.h": "c",
         "comunication_protocol.h": "c",
-        "limits.h": "c"
+        "limits.h": "c",
+        "gpio.h": "c"
     },
     //"cortex-debug.stm32cubeprogrammer": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
 }
