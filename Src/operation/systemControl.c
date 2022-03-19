@@ -5,7 +5,7 @@
 #include "DirectThrustersCtrl.h"
 #include "operation/ControlLoop.h"
 #include "IO/Sticks.h"
-#include "drivers/USART2.h"
+#include "drivers/USART3.h"
 
 #define RX_BUFFER_SIZE 100
 
@@ -13,13 +13,13 @@ uint8_t rx_buffer[RX_BUFFER_SIZE];
 
 void SYSCTRL_Init()
 {
-USART2_Receive_DMA(rx_buffer);
+    USART3_Receive_DMA(rx_buffer);
 }
 
 
 void SYSCTRL_Task(timeUs_t t)
 {
-    if(!USART2_NewData())
+    if(!USART3_NewData())
         return;
     //uint16_t data_len = USART2_GetReceivedBytes();
 

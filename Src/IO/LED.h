@@ -6,3 +6,6 @@ void LED_Red_Toggle(void);
 
 void LED_Green_Set(bool state);
 void LED_Red_Set(bool state);
+
+void LED_HeartBeat_Toggle(void);
+void LED_HeartBeat_Set(bool state);

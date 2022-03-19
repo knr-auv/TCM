@@ -71,6 +71,6 @@ void initTasks(void)
 	enableTask(TASK_TELEMETRY_DEBUG, true);
 	enableTask(TASK_PID, true);
 	enableTask(TASK_SYSTEM_CONTROL, true);
-	enableTask(TASK_LED_TEST, true);
+	enableTask(TASK_LED_TEST, false);
 	//enableTask(TASK_SYSTEM_CONTROL, true);
 }

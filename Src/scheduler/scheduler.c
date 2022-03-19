@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdbool.h>
+#include "IO/LED.h"
 #include "scheduler.h"
 #include "time/time.h"
 
@@ -20,6 +21,7 @@ void taskSystem(timeUs_t currentTime)
 		totalWaitingTasksSamples = 0;
 		totalWaitingTasks = 0;
 	}
+	LED_HeartBeat_Toggle();
 }
 
 static void clearQueue(void)
@@ -103,9 +105,20 @@ void scheduler(void)
 	{
 		if (task->checkFun)
 		{
-			/*
-				TODO: Configure event driven task
-			*/
+			 const timeUs_t currentTimeBeforeCheckFuncCallUs = micros();
+			if (task->dynamicPriority > 0) {
+                task->ageCycles = 1 + ((timeDelta_t)(currentTime - task->lastSignaled)) / task->desiredPeriod;
+                task->dynamicPriority = 1 + task->staticPriority * task->ageCycles;
+                waitingTasks++;
+            } else if (task->checkFun(currentTimeBeforeCheckFuncCallUs, currentTimeBeforeCheckFuncCallUs - task->lastExecution)) {
+
+                task->lastSignaled = currentTimeBeforeCheckFuncCallUs;
+                task->ageCycles = 1;
+                task->dynamicPriority = 1 + task->staticPriority;
+                waitingTasks++;
+            } else {
+                task->ageCycles = 0;
+            }
 		}
 		else if (task->staticPriority == TASK_PRIORITY_REALTIME) //handling high priority task
 		{
