@@ -1,3 +1,5 @@
+#include <string.h>
+#include <stdlib.h>
 #include "ControlLoop.h"
 #include "IMU.h"
 #include "time/time.h"
@@ -215,4 +217,80 @@ void CL_SetDirectMode()
 float *CL_GetMotorOutputs()
 {
     return control_out;
+}
+
+
+void CL_SerializePIDs(uint8_t* buffer, uint16_t* len)
+{
+    //5*floatstatic PID_t pid_roll;
+  
+    *len =5*3*sizeof(float);
+
+    memcpy(buffer,&roll_level_gain, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_roll.P, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_roll.I, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_roll.D, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_roll.windup, sizeof(float));
+    buffer += sizeof(float);
+
+    memcpy(buffer,&pitch_level_gain, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_pitch.P, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_pitch.I, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_pitch.D, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_pitch.windup, sizeof(float));
+    buffer += sizeof(float);
+
+    memcpy(buffer,&yaw_level_gain, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_yaw.P, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_yaw.I, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_yaw.D, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(buffer,&pid_yaw.windup, sizeof(float));
+}
+void CL_LoadPIDs(uint8_t* buffer, uint16_t len)
+{
+    if(len<15*sizeof(float))
+        return;
+    memcpy(&roll_level_gain,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_roll.P,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_roll.I,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_roll.D,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_roll.windup,buffer, sizeof(float));
+    buffer += sizeof(float);
+
+    memcpy(&pitch_level_gain,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_pitch.P,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_pitch.I,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_pitch.D,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_pitch.windup,buffer, sizeof(float));
+    buffer += sizeof(float);
+
+    memcpy(&yaw_level_gain,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_yaw.P,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_yaw.I,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_yaw.D,buffer, sizeof(float));
+    buffer += sizeof(float);
+    memcpy(&pid_yaw.windup,buffer, sizeof(float));
 }

@@ -45,6 +45,9 @@ void SPI_WriteByte(uint8_t byte)
     SetPinCS(true);
 }
 
+
+bool SST25_IsBusy();
+
 void SST25_WriteEnable()
 {
     SPI_WriteByte(SST25_WREN);
@@ -97,6 +100,7 @@ void SST25_Erase4K(uint32_t dst)
     SPI_TransmitByte((dst&0xFF));
     SetPinCS(true); 
     SST25_WriteDisable();
+      while(SST25_IsBusy());
 }
 void SST25_Erase32K(uint32_t dst)
 {
@@ -108,6 +112,7 @@ void SST25_Erase32K(uint32_t dst)
     SPI_TransmitByte((dst&0xFF));
     SetPinCS(true); 
     SST25_WriteDisable();
+      while(SST25_IsBusy());
 }
 void SST25_Erase64K(uint32_t dst)
 {
@@ -118,7 +123,8 @@ void SST25_Erase64K(uint32_t dst)
     SPI_TransmitByte(((dst&0xFFFF)>>8));
     SPI_TransmitByte((dst&0xFF));
     SetPinCS(true);
-    SST25_WriteDisable(); 
+    SST25_WriteDisable();
+      while(SST25_IsBusy());
 }
 uint8_t SST25_ReadStatusReg()
 {
@@ -284,7 +290,7 @@ bool SST25_SelfTest()
 
 
     //0x218 is working xD
-    uint32_t dst = 0x0000032;
+    uint32_t dst = 0x0000000;
 
 
     SST25_Erase4K(dst);

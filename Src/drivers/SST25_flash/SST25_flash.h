@@ -9,9 +9,9 @@ address range:
 
 262 144 bytes
 
-65.536 4k sectors
-8.192 32Kbyte adrres
-4.096 64kbyte addrres
+64  4k sectors
+8   32Kbyte addres
+4   64kbyte addres
 */
 
 /*
@@ -36,6 +36,7 @@ void SST25_ChipErase();
 void SST25_Erase4K(uint32_t dst);
 void SST25_Erase32K(uint32_t dst);
 void SST25_Erase64K(uint32_t dst);
+
 
 void SST25_Read(uint32_t address,uint8_t* buffer, uint16_t len);
 void SST25_FastRead(uint32_t address,uint8_t* buffer, uint16_t len);

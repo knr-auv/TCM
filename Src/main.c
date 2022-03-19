@@ -15,17 +15,18 @@ void init(void)
     
     initScheduler();
     initTasks();
+    MEM_Init();
 }
 
 int main(void)
 {
-    
     init();
     LED_Red_Set(false);
 
     if(MEM_Init())
         LED_Red_Set(true);
-        
+     //MEM_SaveSettings();   
+    MEM_LoadSettings();
     while(1)
     {
         scheduler();

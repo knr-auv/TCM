@@ -25,3 +25,6 @@ void CL_Disarm();
 void CL_SetDirectMode();
 
 void CL_SetMode(cl_mode_e mode);
+
+void CL_SerializePIDs(uint8_t* buffer, uint16_t* len);
+void CL_LoadPIDs(uint8_t* buffer, uint16_t len);
