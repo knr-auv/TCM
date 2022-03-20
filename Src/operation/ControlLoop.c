@@ -38,7 +38,7 @@ Control:
 #define CONTROL_OUTPUTS 5
 
 
-float* control_thrusters_matrix;
+float control_thrusters_matrix[CONTROL_OUTPUTS*THRUSTERS_COUNT];
 float control_out[CONTROL_OUTPUTS];
 float thrusters_out[THRUSTERS_COUNT];
 
@@ -74,37 +74,10 @@ void (*modeFun[CL_MODE_COUNT])(float dt)=
 [CL_MODE_ACRO] = AcroMode
 };
 
-void AllocControlThrustersMatrix(uint16_t size, float** matrix)
-{
-    float* SU = *matrix;
-    free(SU);
-    SU = malloc(size*sizeof(float));
-    if(!SU)
-        return;
-    for(uint16_t i =0; i<size;i++)
-        SU[i] = 0;
-    return;
 
-}
 
 void initControlThrustersMatrix()
 {
-    /*
-        CTmatrix*Control_Out = thrusters_out
-
-            roll    pitch   yaw     depth   forward
-        t1
-        t2
-        t3
-        t4
-        t5
-        t6
-        t7
-        t8
-    */
-    AllocControlThrustersMatrix(CONTROL_OUTPUTS*THRUSTERS_COUNT, &control_thrusters_matrix);
-    
-
     float su[] =
     {
         0.f,    0.f,   -1.f,    0.f,    0.f,
@@ -237,13 +210,10 @@ float* CL_GetThrustersMatrix()
 void CL_SerializeControlThrustersMatrix(uint8_t **buffer, uint16_t* len)
 {
     *len = CONTROL_OUTPUTS*THRUSTERS_COUNT*sizeof(float);
-    uint8_t *buff = *buffer;
-    buff = malloc(*len);
-    memcpy(buff, control_thrusters_matrix, *len);
+    *buffer = (uint8_t*)control_thrusters_matrix;
 }
 void CL_LoadControlThrustersMatrix(uint8_t* buffer, uint16_t len)
 {
-    AllocControlThrustersMatrix(THRUSTERS_COUNT*CONTROL_OUTPUTS, &control_thrusters_matrix);
     memcpy(control_thrusters_matrix, buffer, len);
 }
 void CL_SerializePIDs(uint8_t** buffer, uint16_t* len)

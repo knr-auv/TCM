@@ -8,6 +8,7 @@ timeUs_t LastUpdated = 0;
 
 void STICK_HandleNewInput(float* data, uint16_t len)
 {
+    LastUpdated = micros();
     if(len>16)
     len  = 16;
     memcpy(stick_input, data, sizeof(float)*len);
@@ -15,7 +16,8 @@ void STICK_HandleNewInput(float* data, uint16_t len)
 
 float* STICK_GetSticks()
 {
-    LastUpdated = micros();
+    
+    stick_input[1]= 1.f;
     return stick_input;
 }
 

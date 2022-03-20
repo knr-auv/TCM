@@ -28,7 +28,7 @@ void COMMON_linear_saturation(float* vector, uint16_t count, float max_value)
     }
     if(max>max_value)
     {
-        float coef = max/max_value;
+        float coef = max_value/max;
         for(uint16_t i = 0;i<count;i++)
         {
             vector[i]*=coef;

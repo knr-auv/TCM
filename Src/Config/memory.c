@@ -8,7 +8,7 @@
 /*
 This module is using 2nd sector (addresses from 4096).
 */
-#define START_ADDRESS 0x4096
+#define START_ADDRESS 4096
 #define MEM_BUFFER_SIZE     200
 #define MEM_ID_PID          0x0001
 #define MEM_ID_CL_MATRIX    0x0002
@@ -24,7 +24,8 @@ typedef struct
 bool MEM_Init()
 {
 SST25_Init();
-return SST25_ReadID();//SST25_SelfTest();
+uint8_t id = SST25_ReadID();
+return id;
 }
 
 void MEM_CreateHeader(uint8_t* buffer, uint16_t ID, uint16_t len)
@@ -56,7 +57,7 @@ void MEM_SaveSettings()
     SST25_WriteBytes(address ,header, 4);
     address+=4;
     SST25_WriteBytes(address, dataBuffer, len);
-    free(dataBuffer);
+ 
     address+=len;
 
 
@@ -83,6 +84,7 @@ void MEM_LoadSettings()
     if(len > MEM_BUFFER_SIZE)
         return;
     SST25_Read(address, data_buffer, len);
+    address+=len;
     CL_LoadPIDs(data_buffer, len);
 
     SST25_Read(address, header, 4);
