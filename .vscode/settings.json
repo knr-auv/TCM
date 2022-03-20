@@ -14,7 +14,11 @@
         "usart1.h": "c",
         "comunication_protocol.h": "c",
         "limits.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "communicationhandler.h": "c",
+        "automations.h": "c",
+        "telemetry_debug.h": "c",
+        "communication_protocol_service.h": "c"
     },
     //"cortex-debug.stm32cubeprogrammer": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
 }
