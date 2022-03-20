@@ -96,15 +96,15 @@ void CL_Init()
     status = CL_STATUS_DISARMED;
     mode = CL_MODE_STABLE;
 
-    PID_initialize(&pid_roll, 400, 1.5, 1, 10);
-    PID_initialize(&pid_pitch, 400, 1.5, 1.5, 10);
-    PID_initialize(&pid_yaw, 40, 0, 0, 10);
+    PID_initialize(&pid_roll, 4, 1.5, 1, 10);
+    PID_initialize(&pid_pitch, 4, 1.5, 1.5, 10);
+    PID_initialize(&pid_yaw, 4, 0, 0, 10);
     initControlThrustersMatrix();
     initThrusters();
 
-    pitch_level_gain = 50;
-    roll_level_gain = 50;
-    yaw_level_gain = 50;
+    pitch_level_gain = 5;
+    roll_level_gain = 5;
+    yaw_level_gain = 5;
 }
 
 
@@ -166,9 +166,10 @@ void update_outputs()
     COMMON_linear_saturation(thrusters_out,THRUSTERS_COUNT, MAX_OUTPUT);
     
 }
+uint16_t out[THRUSTERS_COUNT];
 void set_motors()
 {
-    uint16_t out[THRUSTERS_COUNT];
+    
     for(uint8_t i =0; i<THRUSTERS_COUNT;i++)
         out[i] = THRUSTERS_map(thrusters_out[i], MIN_OUTPUT, MAX_OUTPUT);
     setThrusters(out);
@@ -194,7 +195,10 @@ float *CL_GetMotorOutputs()
 {
     return thrusters_out;
 }
-
+uint16_t* CL_GetThrustersValue()
+{
+    return out;
+}
 cl_status_e CL_GetStatus()
 {
     return status;

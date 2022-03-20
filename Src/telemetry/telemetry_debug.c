@@ -51,13 +51,13 @@ uint16_t createFrame()
     analog_sensors[0] = ANALOG_CPUTemp();
     analog_sensors[1] = ANALOG_onboardTemp();
     analog_sensors[2] = ANALOG_onboardHumidity();
-    float *thrusters = CL_GetMotorOutputs();
+    uint16_t *thrusters = CL_GetThrustersValue();
     quaternion_t* orientation = IMU_GetOrientationQ();
     uint16_t len = 0;
     memcpy(msg_buffer, analog_sensors, 3*sizeof(float));
     len += 3*sizeof(float);
-    memcpy(msg_buffer + len, thrusters, sizeof(float)*THRUSTERS_COUNT);
-    len += sizeof(float)*THRUSTERS_COUNT;
+    memcpy(msg_buffer + len, thrusters, sizeof(uint16_t)*THRUSTERS_COUNT);
+    len += sizeof(uint16_t)*THRUSTERS_COUNT;
     memcpy(msg_buffer + len, orientation, sizeof(quaternion_t));
     len += sizeof(quaternion_t);
     constructHeader(len + HEADER_SIZE+CHECKSUM_SIZE);
