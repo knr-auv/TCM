@@ -1,6 +1,9 @@
 #pragma once
 
+void DTCTRL_Task(timeUs_t t);
 
 bool DTCTRL_Timeout();
-float*  DTCRTL_GetValues();
-void DTCRTL_HandlNewValues(float* values);
+float*  DTCTRL_GetValues();
+
+void DTCTRL_HandleNewDirectMatrixThrustersValues(float* values);
+void DTCTRL_HandlNewDirectThrustersValues(float* values);

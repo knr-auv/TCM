@@ -5,4 +5,8 @@
 #define TASK_TELEMETRY_DEBUG_HZ     10
 #define TASK_PID_HZ                 100
 
-#define TASK_SYSTEM_CTRL_HZ         100
+#define TASK_COMM_HANDLER_HZ        100
+
+#define TASK_AUTOMATIONS_HZ         20
+
+#define TASK_DIRECT_MOTORS_CTRL_HZ  50

@@ -21,7 +21,7 @@ bool UM7_NewData(void)
 }
 float *UM7_GetAngVelPointer(void)
 {
-    return &angular_velocity;
+    return angular_velocity;
 }
 quaternion_t *UM7_GetOrientationPointer(void)
 {

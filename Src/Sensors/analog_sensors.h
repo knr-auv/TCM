@@ -1,4 +1,5 @@
 #include <stdbool.h>
+
 void ANALOG_Enable();
 bool ANALOG_IsEnabled();
 void ANALOG_Disable();

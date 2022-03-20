@@ -12,5 +12,5 @@ void initThrusters();
 void deinitThrusters();
 void resetThrusters_pwm_t(uint16_t *out);
 void THRUSTERS_Disable();
-void THRUSTER_Enable();
+void THRUSTERS_Enable();
 float THRUSTERS_map(float x, float in_min, float in_max);

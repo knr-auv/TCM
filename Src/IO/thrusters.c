@@ -75,7 +75,7 @@ TIM1->CR1 &= ~TIM_CR1_CEN;
 TIM3->CR1 &= ~TIM_CR1_CEN;
 }
 
-void THRUSTER_Enable()
+void THRUSTERS_Enable()
 {
     allow_update = true;
 }

@@ -4,6 +4,7 @@
 #include "Sensors/analog_sensors.h"
 #include "operation/IMU.h"
 #include "operation/ControlLoop.h"
+#include "operation/CommunicationHandler.h"
 #include "IO/LED.h"
 #include "Config/memory.h"
 void init(void)
@@ -12,11 +13,13 @@ void init(void)
     ANALOG_Enable();
     IMU_Init();
     CL_Init();
-    
-    initScheduler();
-    initTasks();
+
     MEM_Init();
     MEM_LoadSettings();
+    COMHANDLER_Init();
+    initScheduler();
+    initTasks();
+    
 }
 
 int main(void)

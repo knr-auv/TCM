@@ -52,7 +52,8 @@ void ANALOG_Disable(){
 
 void ANALOG_beginConversion(void)
 {
-    ADC1->CR2 |= ADC_CR2_SWSTART;
+    if(enabled)
+        ADC1->CR2 |= ADC_CR2_SWSTART;
 }
 void avg_value(uint32_t *dst, sensors_map_e sensor){
     *(dst) = 0;

@@ -17,7 +17,8 @@ Sensors/analog_sensors.c
 helpers/quaternions.c
 helpers/PID.c
 helpers/common.c
-helpers/comunication_protocol.c
+helpers/CommunicationProtocol/communication_protocol.c
+
 
 scheduler/scheduler.c
 tasks/tasks.c
@@ -27,8 +28,10 @@ Config/memory.c
 
 operation/ControlLoop.c
 operation/IMU.c
-operation/systemControl.c
+operation/CommunicationHandler.c
 operation/DirectThrustersCtrl.c
+operation/Automations.c
+operation/ServiceMode.c
 
 telemetry/telemetry_debug.c
 

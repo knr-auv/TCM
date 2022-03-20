@@ -1,4 +1,5 @@
 #pragma once
+#define TIME_MS(x) (1000*x)
 
 #define USART1_BAUD 115200
 #define USART1_RX_BUFFER_SIZE   252
@@ -10,3 +11,7 @@
 
 #define USART3_BAUD 115200
 #define USART3_RX_BUFFER_SIZE   252
+
+/* automations config*/
+#define AUTOMATIONS_STICK_TIMEOUT           TIME_MS(400)
+#define AUTOMATIONS_COMMHANDLER_TIMEOUT     TIME_MS(400)
