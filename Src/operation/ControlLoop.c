@@ -207,22 +207,24 @@ float* CL_GetThrustersMatrix()
 {
     return control_thrusters_matrix;
 }
-void CL_SerializeControlThrustersMatrix(uint8_t **buffer, uint16_t* len)
+uint8_t* CL_SerializeControlThrustersMatrix(uint16_t* len)
 {
     *len = CONTROL_OUTPUTS*THRUSTERS_COUNT*sizeof(float);
-    *buffer = (uint8_t*)control_thrusters_matrix;
+    uint8_t *buffer = (uint8_t*)control_thrusters_matrix;
+    return buffer;
 }
 void CL_LoadControlThrustersMatrix(uint8_t* buffer, uint16_t len)
 {
     memcpy(control_thrusters_matrix, buffer, len);
 }
-void CL_SerializePIDs(uint8_t** buffer, uint16_t* len)
+uint8_t* CL_SerializePIDs( uint16_t* len)
 {
     //5*floatstatic PID_t pid_roll;
-    uint8_t* buff = *buffer;
-    
+    uint8_t* buff;
+    uint8_t *head;
     *len =5*3*sizeof(float);
     buff = malloc(*len);
+    head = buff;
 
     memcpy(buff,&roll_level_gain, sizeof(float));
     buff += sizeof(float);
@@ -255,11 +257,13 @@ void CL_SerializePIDs(uint8_t** buffer, uint16_t* len)
     memcpy(buff,&pid_yaw.D, sizeof(float));
     buff += sizeof(float);
     memcpy(buff,&pid_yaw.windup, sizeof(float));
+    return head;
 }
 void CL_LoadPIDs(uint8_t* buffer, uint16_t len)
 {
     if(len<15*sizeof(float))
         return;
+
     memcpy(&roll_level_gain,buffer, sizeof(float));
     buffer += sizeof(float);
     memcpy(&pid_roll.P,buffer, sizeof(float));

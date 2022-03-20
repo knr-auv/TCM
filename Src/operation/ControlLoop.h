@@ -29,6 +29,6 @@ cl_mode_e CL_GetMode();
 void CL_SetMode(cl_mode_e mode);
 float* CL_GetThrustersMatrix();
 void CL_LoadControlThrustersMatrix(uint8_t* buffer, uint16_t len);
-void CL_SerializeControlThrustersMatrix(uint8_t **buffer, uint16_t* len);
-void CL_SerializePIDs(uint8_t** buffer, uint16_t* len);
+uint8_t* CL_SerializeControlThrustersMatrix(uint16_t* len);
+uint8_t* CL_SerializePIDs( uint16_t* len);
 void CL_LoadPIDs(uint8_t* buffer, uint16_t len);

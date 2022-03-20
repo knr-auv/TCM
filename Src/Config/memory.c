@@ -44,7 +44,7 @@ void MEM_SaveSettings()
 
     SST25_Erase4K(address);
   
-    CL_SerializePIDs(&dataBuffer, &len);
+    dataBuffer = CL_SerializePIDs( &len);
     MEM_CreateHeader(header, MEM_ID_PID, len);
     SST25_WriteBytes(address ,header, 4);
     address+=4;
@@ -52,7 +52,7 @@ void MEM_SaveSettings()
     free(dataBuffer);
     address+=len;
 
-    CL_SerializeControlThrustersMatrix(&dataBuffer, &len);
+    dataBuffer = CL_SerializeControlThrustersMatrix(&len);
     MEM_CreateHeader(header, MEM_ID_CL_MATRIX, len);
     SST25_WriteBytes(address ,header, 4);
     address+=4;

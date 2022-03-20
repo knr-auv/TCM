@@ -114,8 +114,7 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
     {
         if(msg->specific==MSG_OKON_REQUEST_PID)
         {
-            
-            CL_SerializePIDs(&msg_from_okon.user_data, &msg_from_okon.user_data_len);
+            msg_from_okon.user_data =CL_SerializePIDs(&msg_from_okon.user_data_len);
             msg_from_okon.type = MSG_FROM_OKON_PID;
             COMPROTO_CreateMsg(&msg_from_okon);
             free(msg_from_okon.user_data); 
@@ -127,7 +126,7 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
     {
         if(msg->specific==MSG_OKON_REQUEST_PID)
         {
-            CL_SerializePIDs(&msg_from_okon.user_data, &msg_from_okon.user_data_len);
+            msg_from_okon.user_data = CL_SerializePIDs( &msg_from_okon.user_data_len);
             msg_from_okon.type = MSG_FROM_OKON_PID;
             COMPROTO_CreateMsg(&msg_from_okon);
             free(msg_from_okon.user_data); 
@@ -136,10 +135,10 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
         }
         else if (msg->specific==MSG_OKON_REQUEST_CL_MATRIX)
         {
-            CL_SerializeControlThrustersMatrix(&msg_from_okon.user_data, &msg_from_okon.user_data_len);
+            msg_from_okon.user_data = CL_SerializeControlThrustersMatrix(&msg_from_okon.user_data_len);
             msg_from_okon.type = MSG_FROM_OKON_CL_MATRIX;
             COMPROTO_CreateMsg(&msg_from_okon);
-            free(msg_from_okon.user_data); 
+           // free(msg_from_okon.user_data); 
             pending_response =true;
             COMHANDLER_SendResponse(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
         }

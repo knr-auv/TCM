@@ -16,8 +16,6 @@ void STICK_HandleNewInput(float* data, uint16_t len)
 
 float* STICK_GetSticks()
 {
-    
-    stick_input[1]= 1.f;
     return stick_input;
 }
 
