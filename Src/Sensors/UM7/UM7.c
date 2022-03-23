@@ -4,14 +4,17 @@
 #include "UM7.h"
 #include "UM7_registers.h"
 #include "config.h"
-#include "drivers/USART2.h"
+#include "drivers/USART.h"
 #include "time/time.h"
+
  quaternion_t position;
  float angular_velocity[3];
 bool newData = false;
-static uint8_t rx_buffer[UM7_RX_BUFFER];
-static uint8_t tx_buffer[UM7_TX_BUFFER];
+static uint8_t rx_buffer[CONFIG_UM7_RX_BUFFER_SIZE];
+static uint8_t tx_buffer[CONFIG_UM7_TX_BUFFER_SIZE];
  UM7_packet_t packet;
+
+ static USART_t uart;
 
 bool UM7_NewData(void)
 {
@@ -100,9 +103,9 @@ void UM7_HandleGyroProcesedPacket(UM7_packet_t *packet)
 void UM7_HandleHealthPacket(UM7_packet_t *packet)
 {
 }
-void USART2_RC_Complete_Callback(void)
+void UM7_RC_Complete_Callback(void)
 {
-    if (UM7_HandleSerialData(rx_buffer, USART2_GetReceivedBytes(), &packet) == PI_GOOD)
+    if (UM7_HandleSerialData(rx_buffer, uart.GetReceivedBytes(), &packet) == PI_GOOD)
     {
         if ((packet.address == DREG_QUAT_AB) || (packet.address == DREG_QUAT_CD))
             UM7_HandleQuaternionPacket(&packet);
@@ -116,7 +119,10 @@ void USART2_RC_Complete_Callback(void)
 }
 bool UM7_Init(void)
 {
-    USART2_Receive_DMA(rx_buffer);
+    USART_t* u = USART_GetUSART(CONFIG_UM7_USART);
+    u->RXCompleteCallback = UM7_RC_Complete_Callback;
+    uart = *u;//
+    uart.ReceiveDMA(rx_buffer, CONFIG_UM7_RX_BUFFER_SIZE);
     return true;
 }
 
@@ -170,13 +176,13 @@ void UM7_HEALTH_RATE(uint8_t health)
     data[2] = health >> 8;
     data[3] = 255;
     uint16_t len = createMessage(tx_buffer, CREG_COM_RATES6, true, false, data, 4);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 }
 void UM7_ZERO_GYROS(void)
 {
 
     uint16_t len = createMessage(tx_buffer, ZERO_GYROS, false, false, 0, 0);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 }
 void UM7_MISC(bool pps, bool zg, bool mag, bool quatMode)
 {
@@ -185,7 +191,7 @@ void UM7_MISC(bool pps, bool zg, bool mag, bool quatMode)
     data[1] = pps;
     data[2] = data[3] = 0;
     uint16_t len = createMessage(tx_buffer, CREG_MISC_SETTINGS, true, false, data, 4);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 }
 void UM7_NMEA_PACKETS(uint8_t health, uint8_t pose, uint8_t att, uint8_t sensor)
 {
@@ -195,12 +201,12 @@ void UM7_NMEA_PACKETS(uint8_t health, uint8_t pose, uint8_t att, uint8_t sensor)
     data[2] = 0;
     data[3] = 0;
     uint16_t len = createMessage(tx_buffer, CREG_COM_RATES7, true, false, data, 4);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 }
 void UM7_FACTORY_RESET(void)
 {
     uint16_t len = createMessage(tx_buffer, RESET_TO_FACTORY, false, false, 0, 0);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 }
 void UM7_RAW_Rates(uint8_t acc, uint8_t gyro, uint8_t mag)
 {
@@ -210,17 +216,17 @@ void UM7_RAW_Rates(uint8_t acc, uint8_t gyro, uint8_t mag)
     data[2] = 0;
     data[3] = 0;
     uint16_t len = createMessage(tx_buffer, CREG_COM_RATES2, true, false, data, 4);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 
     data[0] = 0;
     data[1] = mag;
     data[2] = gyro;
     data[3] = acc;
-    while (!USART2_Check_Tx_end())
+    while (!uart.CheckTxEnd())
     {
     };
     len = createMessage(tx_buffer, CREG_COM_RATES1, true, false, data, 4);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 }
 void UM7_PROCCESED_Rates(uint8_t acc, uint8_t gyro, uint8_t mag)
 {
@@ -230,17 +236,17 @@ void UM7_PROCCESED_Rates(uint8_t acc, uint8_t gyro, uint8_t mag)
     data[2] = 0;
     data[3] = 0;
     uint16_t len = createMessage(tx_buffer, CREG_COM_RATES4, true, false, data, 4);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 
     data[0] = 0;
     data[1] = mag;
     data[2] = gyro;
     data[3] = acc;
-    while (!USART2_Check_Tx_end())
+    while (!uart.CheckTxEnd())
     {
     };
     len = createMessage(tx_buffer, CREG_COM_RATES3, true, false, data, 4);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
 }
 void UM7_QUAT_EUL_POS_VEL_Rates(uint8_t quat, uint8_t eul, uint8_t pos, uint8_t vel)
 {
@@ -250,6 +256,6 @@ void UM7_QUAT_EUL_POS_VEL_Rates(uint8_t quat, uint8_t eul, uint8_t pos, uint8_t 
     data[2] = eul;
     data[3] = quat;
     uint16_t len = createMessage(tx_buffer, CREG_COM_RATES5, true, false, data, 4);
-    USART2_Transmit_DMA(tx_buffer, len);
+    uart.TransmitDMA(tx_buffer, len);
     DelayMs(100);
 }

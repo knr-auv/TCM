@@ -7,3 +7,6 @@ float*  DTCTRL_GetValues();
 
 void DTCTRL_HandleNewDirectMatrixThrustersValues(float* values);
 void DTCTRL_HandlNewDirectThrustersValues(float* values);
+
+void DTCTRL_Enable();
+void DTCTRL_Disable();

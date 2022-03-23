@@ -47,10 +47,10 @@ void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* m
         return;
     }
    
-    uint16_t dataLen =  user_input[2] | (user_input[3]<<8);
-    uint16_t checksum = (user_input[dataLen - 1]<<8)|user_input[dataLen - 2];
+    uint16_t dataLen =  (user_input[2] <<8)| (user_input[3]);
+    uint16_t checksum = (user_input[len - 2]<<8)|user_input[len - 1];
 
-    if(checksum!=calculateChecksum(user_input, dataLen + 3))
+    if(checksum!=calculateChecksum(user_input, dataLen + 5))
     {
         msg_struct->valid = false;
         return;
@@ -88,10 +88,6 @@ void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* m
 void COMPROTO_CreateMsg(COMPROTO_msg_from_okon_t* msg)
 {
     msg->tx_buffer_len = 7 + msg->user_data_len;
-    msg->tx_buffer = malloc(msg->tx_buffer_len);
-    if(!msg->tx_buffer)
-        msg->created = false;
-
     msg->tx_buffer[0] = MSG_HEADER_1;
     msg->tx_buffer[1] = MSG_HEADER_2;
     msg->tx_buffer[2] = msg->user_data_len>>8;

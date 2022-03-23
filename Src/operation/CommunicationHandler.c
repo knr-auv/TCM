@@ -1,30 +1,32 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include "config.h"
 #include "time/time.h"
 #include "helpers/CommunicationProtocol/communication_protocol.h"
 
 #include "DirectThrustersCtrl.h"
 #include "operation/ControlLoop.h"
 #include "IO/Sticks.h"
-#include "drivers/USART3.h"
+#include "drivers/USART.h"
 #include "ServiceMode.h"
-#define RX_BUFFER_SIZE 252
-#define TX_BUFFER_SIZE 252
 
-static uint8_t rx_buffer[RX_BUFFER_SIZE];
+
+static uint8_t rx_buffer[CONFIG_COMM_HANDLER_BUFFER_LEN];
+static uint8_t tx_buffer[CONFIG_COMM_HANDLER_BUFFER_LEN];
 
 timeUs_t last_time = 0;
 COMPROTO_msg_info_t msg;
 COMPROTO_msg_from_okon_t msg_from_okon;
 
-bool pending_response = false;
+static USART_t uart;
 
 
 void HandleRequestMsg(COMPROTO_msg_info_t *msg);
 void HandleSticksMsg(COMPROTO_msg_info_t *msg);
 void HandeModeMsg(COMPROTO_msg_info_t *msg);
 void HandleCLStatusMsg(COMPROTO_msg_info_t *msg);
+
 
 timeUs_t COMHANDLER_TimeSinceLastUpdate()
 {
@@ -33,22 +35,15 @@ timeUs_t COMHANDLER_TimeSinceLastUpdate()
 
 void COMHANDLER_Init()
 {
-    USART3_Receive_DMA(rx_buffer);
+    uart = *USART_GetUSART(CONFIG_COMM_HANDLER_USART);
+    uart.ReceiveDMA(rx_buffer, CONFIG_COMM_HANDLER_BUFFER_LEN);
+    msg_from_okon.tx_buffer = tx_buffer;
 }
 
 bool COMHANDLER_CheckFun(timeUs_t currentTime, timeUs_t deltaTime)
 {
-    if(pending_response)
-    {
-        if(USART3_Check_Tx_end())
-        {
-            pending_response = false;
-            free(msg_from_okon.tx_buffer);    
-        }
-            
-            
-    }
-    if(USART3_NewData())
+
+    if(uart.NewDataFlag())
     {
         last_time = currentTime;
         return true;
@@ -58,28 +53,26 @@ bool COMHANDLER_CheckFun(timeUs_t currentTime, timeUs_t deltaTime)
 
 void COMHANDLER_SendResponse(uint8_t* data, uint8_t len)
 {
-    if(!pending_response){
-    USART3_Transmit_DMA(data, len);
-    pending_response = true;
-
-    }
+    uart.TransmitDMA(data, len);
 }
 void COMHANDLER_SendConfirmation(uint8_t data)
 {
-    if(pending_response)
-        return;
-
     msg_from_okon.user_data_len = 1;
     msg_from_okon.type = MSG_FROM_OKON_SERVICE_CONFIRM;
-    msg_from_okon.user_data =malloc(1);
+    uint8_t buff[1];
+    msg_from_okon.user_data = buff;
     msg_from_okon.user_data[0]= data;
     COMPROTO_CreateMsg(&msg_from_okon); 
-    pending_response =true;
     COMHANDLER_SendResponse(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
 }
 void COMHANDLER_Task(timeUs_t t)
 {
-   uint16_t len = USART3_GetReceivedBytes();
+    if(!uart.NewDataFlag())
+    {
+        return;
+    }
+   uart.NewDataFlagReset();
+   uint16_t len = uart.GetReceivedBytes();
    COMPROTO_ParseMsg(rx_buffer, len, &msg);
    if(!msg.valid)
     return;
@@ -109,7 +102,6 @@ void COMHANDLER_Task(timeUs_t t)
 
 void HandleRequestMsg(COMPROTO_msg_info_t *msg)
 {
-    if(!pending_response){
     if(CL_GetStatus()==CL_STATUS_ARMED)
     {
         if(msg->specific==MSG_OKON_REQUEST_PID)
@@ -118,8 +110,8 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
             msg_from_okon.type = MSG_FROM_OKON_PID;
             COMPROTO_CreateMsg(&msg_from_okon);
             free(msg_from_okon.user_data); 
-            pending_response =true;
-            COMHANDLER_SendResponse(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
+
+            uart.TransmitDMA(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
         }
     }
     else
@@ -130,8 +122,8 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
             msg_from_okon.type = MSG_FROM_OKON_PID;
             COMPROTO_CreateMsg(&msg_from_okon);
             free(msg_from_okon.user_data); 
-            pending_response =true;
-            COMHANDLER_SendResponse(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
+            
+            uart.TransmitDMA(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
         }
         else if (msg->specific==MSG_OKON_REQUEST_CL_MATRIX)
         {
@@ -139,11 +131,11 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
             msg_from_okon.type = MSG_FROM_OKON_CL_MATRIX;
             COMPROTO_CreateMsg(&msg_from_okon);
            // free(msg_from_okon.user_data); 
-            pending_response =true;
-            COMHANDLER_SendResponse(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
+
+            uart.TransmitDMA(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
         }
     }
-    }
+    
 }
 void HandleSticksMsg(COMPROTO_msg_info_t *msg)
 {
@@ -166,4 +158,14 @@ void HandleCLStatusMsg(COMPROTO_msg_info_t *msg)
         CL_SetMode(status);
     else if(status == CL_STATUS_DISARMED)
         CL_SetMode(status);
+}
+
+void COMHANDLER_SendHeartBeat()
+{
+            msg_from_okon.user_data =0;
+            msg_from_okon.user_data_len =0;
+            msg_from_okon.type = MSG_FROM_OKON_HEART_BEAT;
+            COMPROTO_CreateMsg(&msg_from_okon);
+            uart.TransmitDMA(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
+           
 }

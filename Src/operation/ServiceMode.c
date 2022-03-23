@@ -36,6 +36,7 @@ void SERVICE_HandleMsg(COMPROTO_msg_info_t *msg)
         if(msg->specific == MSG_OKON_SERVICE_REBOOT)
         {
             COMHANDLER_SendConfirmation(MSG_OKON_SERVICE_REBOOT);
+            DelayMs(10);
             NVIC_SystemReset();
         }
         else if(msg->specific == MSG_OKON_SERVICE_UPDATE_CL_MATRIX)
@@ -45,11 +46,14 @@ void SERVICE_HandleMsg(COMPROTO_msg_info_t *msg)
         }
         else if (msg->specific == MSG_OKON_SERVICE_ENABLE_DIRECT_MOTORS_CTRL)
         {
+            DTCTRL_Enable();
             enableTask(TASK_DIRECT_MOTORS_CTRL, true);
             COMHANDLER_SendConfirmation(MSG_OKON_SERVICE_ENABLE_DIRECT_MOTORS_CTRL);
         }
         else if (msg->specific == MSG_OKON_SERVICE_DISABLE_DIRECT_MOTORS_CTRL)
         {
+
+             DTCTRL_Disable();
             enableTask(TASK_DIRECT_MOTORS_CTRL, false);
             COMHANDLER_SendConfirmation(MSG_OKON_SERVICE_DISABLE_DIRECT_MOTORS_CTRL);
         }

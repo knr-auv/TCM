@@ -4,6 +4,7 @@ drivers/GPIO.c
 drivers/USART1.c
 drivers/USART3.c
 drivers/USART2.c
+drivers/USART.c
 drivers/SPI2.c
 drivers/SPI3.c
 drivers/SST25_flash/SST25_flash.c

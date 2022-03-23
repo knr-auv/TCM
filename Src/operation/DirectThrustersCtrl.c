@@ -4,7 +4,8 @@
 #include "ControlLoop.h"
 #include "IO/thrusters.h"
 #include "helpers/common.h"
-#define TIMEOUT 4000
+#include "scheduler/scheduler.h"
+#define TIMEOUT 500000
 
 timeUs_t lastTimeDirect = 0;
 timeUs_t lastTimeMatrix = 0;
@@ -23,6 +24,7 @@ bool DTCTRL_Timeout()
     {
         lastTime = lastTimeDirect;
     }
+    timeUs_t out = micros()-lastTime;
     if((micros()-lastTime)>=TIMEOUT)
         return true;
     else return false;
@@ -48,8 +50,10 @@ void DTCTRL_HandlNewDirectThrustersValues(float* values)
         Motors[i] = values[i];
 }
 
-void DTCRL_Enable()
+void DTCTRL_Enable()
 {
+    lastTimeDirect = micros();
+    lastTimeMatrix = micros();
     THRUSTERS_Enable();
 }
 void DTCTRL_Disable()
@@ -59,6 +63,11 @@ void DTCTRL_Disable()
 
 void DTCTRL_Task(timeUs_t t)
 {
+    if(DTCTRL_Timeout())
+    {
+        DTCTRL_Disable();
+        enableTask(TASK_DIRECT_MOTORS_CTRL, false);
+    }
     if(lastTimeDirect<lastTimeMatrix)
     {
         //perform matrix

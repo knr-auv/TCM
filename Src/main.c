@@ -15,11 +15,11 @@ void init(void)
     CL_Init();
 
     MEM_Init();
-    MEM_LoadSettings();
+    //MEM_LoadSettings();
     COMHANDLER_Init();
     initScheduler();
     initTasks();
-    
+   // MEM_SaveSettings();
 }
 
 int main(void)

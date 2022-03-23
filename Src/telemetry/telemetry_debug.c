@@ -74,6 +74,6 @@ uint16_t createFrame()
 
 void TELEMETRY_DEBUG_task(timeUs_t t)
 {
-    USART1_Transmit_DMA(tx_buffer, createFrame());
+   // USART1_Transmit_DMA(tx_buffer, createFrame());
 }
 

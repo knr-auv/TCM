@@ -1,11 +1,13 @@
 #include "thrusters.h"
 #include "time/time.h"
 #include "helpers/common.h"
+#include "IO/LED.h"
 #include <stdbool.h>
 
 #define T_INIT_VALUE 1500.f
-#define T_MAX_VALUE 2000.f
-#define T_MIN_VALUE 1000.f
+#define T_MAX_VALUE 1600.f
+#define T_MIN_VALUE 1400.f
+
 #define THRUSTER_1  TIM1->CCR4
 #define THRUSTER_2  TIM3->CCR4
 #define THRUSTER_3  TIM1->CCR4
@@ -31,7 +33,7 @@ void resetThrusters_pwm_t(uint16_t *out)
 void setThrusters(uint16_t *out)
 {
     if(!allow_update)
-        return;
+      ;//  return;
     THRUSTER_1 = (uint32_t)out[0];
     THRUSTER_2 = (uint32_t)out[1];
     THRUSTER_3 = (uint32_t)out[2];
@@ -44,7 +46,7 @@ void setThrusters(uint16_t *out)
 
 void initThrusters()
 {
-    allow_update = true;
+    allow_update = false;
     TIM1->BDTR |= TIM_BDTR_MOE;
     TIM1->CR1 |= TIM_CR1_CEN;
     TIM3->CR1 |= TIM_CR1_CEN;
@@ -56,12 +58,12 @@ void initThrusters()
     THRUSTER_6 = T_INIT_VALUE;
     THRUSTER_7 = T_INIT_VALUE;
     THRUSTER_8 = T_INIT_VALUE;
-    DelayMs(500);
+    DelayMs(7000);
 }
 
 void deinitThrusters()
 {
-    allow_update=false;
+THRUSTERS_Disable();
 THRUSTER_1 = T_INIT_VALUE;
 THRUSTER_2 = T_INIT_VALUE;
 THRUSTER_3 = T_INIT_VALUE;
@@ -78,10 +80,13 @@ TIM3->CR1 &= ~TIM_CR1_CEN;
 void THRUSTERS_Enable()
 {
     allow_update = true;
+    LED_Red_Set(true);
+
 }
 void THRUSTERS_Disable()
 {
 allow_update=false;
+LED_Red_Set(false);
 THRUSTER_1 = T_INIT_VALUE;
 THRUSTER_2 = T_INIT_VALUE;
 THRUSTER_3 = T_INIT_VALUE;
