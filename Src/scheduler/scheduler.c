@@ -3,6 +3,10 @@
 #include "IO/LED.h"
 #include "scheduler.h"
 #include "time/time.h"
+#include "config.h"
+#ifdef SYSTEM_HEART_BEAT_ENABLE
+#include "operation/CommunicationHandler.h"
+#endif
 
 task_t *taskQueue[TASK_COUNT + 1];	//extra item for null pointer at the end
 task_t *currentTask = NULL;
@@ -22,6 +26,10 @@ void taskSystem(timeUs_t currentTime)
 		totalWaitingTasks = 0;
 	}
 	LED_HeartBeat_Toggle();
+	#ifdef SYSTEM_HEART_BEAT_ENABLE
+	COMHANDLER_SendHeartBeat();
+	#endif
+
 }
 
 static void clearQueue(void)
