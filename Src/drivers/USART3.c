@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 #include "config.h"
 #include "stm32f4xx.h"
@@ -8,17 +9,21 @@
 
 static bool txCompleted = true;
 static bool new_data = false;
-static uint8_t DMA_rx_buffer[USART3_RX_BUFFER_SIZE];
+static uint8_t* DMA_rx_buffer;
 static uint8_t *_rx_buffer;
 static uint16_t receivedBytes = 0;
 static bool shouldRxStop = false;
+static uint16_t rx_buffer_size = 0;
 
 static uint16_t skippedFrames = 0;
-
-bool USART3_NewData(void){
-    bool ret = new_data;
+__attribute__ ((weak)) void USART3_RC_Complete_Callback(){};
+void USART3_NewDataFlagReset()
+{
     new_data=false;
-    return ret;
+}
+
+bool USART3_NewDataFlag(void){
+    return new_data;
 }
 uint16_t USART3_GetReceivedBytes(void){
     uint16_t ret = receivedBytes;
@@ -43,13 +48,15 @@ void USART3_Transmit_DMA(uint8_t* tx_buffer, uint16_t len){
     DMA1_Stream3->CR |= DMA_SxCR_EN;
 }
 
-void USART3_Receive_DMA(uint8_t* rx_buffer){
+void USART3_Receive_DMA(uint8_t* rx_buffer, uint16_t buffer_size){
+    rx_buffer_size = buffer_size;
+    DMA_rx_buffer = malloc(buffer_size);
     shouldRxStop = false;
     DMA1_Stream1->CR&= ~(DMA_SxCR_EN);      //disable dma rx
     while(DMA1_Stream1->CR&DMA_SxCR_EN);    //wait for it
     _rx_buffer = rx_buffer;
     DMA1_Stream1->M0AR = (uint32_t)DMA_rx_buffer;
-    DMA1_Stream1->NDTR = USART3_RX_BUFFER_SIZE; 
+    DMA1_Stream1->NDTR = buffer_size; 
     DMA1_Stream1->CR |= DMA_SxCR_EN;   
 }
 void USART3_StopReceiving(void){
@@ -73,11 +80,12 @@ void DMA1_Stream1_IRQHandler(void)
          new_data = true;
         if(receivedBytes!=0)                    //check if bytes were readed
             skippedFrames++;
-        receivedBytes = USART3_RX_BUFFER_SIZE - DMA1_Stream1->NDTR;    //we expected USART3_RX_BUFFER_SIZE NDTR keeps how many bytes left to transfe
+        receivedBytes = rx_buffer_size - DMA1_Stream1->NDTR;    //we expected USART3_RX_BUFFER_SIZE NDTR keeps how many bytes left to transfe
         memcpy(_rx_buffer,DMA_rx_buffer, receivedBytes);
-        memset(DMA_rx_buffer, 0, sizeof(DMA_rx_buffer));
+        memset(DMA_rx_buffer, 0, rx_buffer_size);
+        USART3_RC_Complete_Callback();
         DMA1_Stream1->M0AR = (uint32_t)DMA_rx_buffer;                   //start new transfer
-        DMA1_Stream1->NDTR = USART3_RX_BUFFER_SIZE;
+        DMA1_Stream1->NDTR = rx_buffer_size;
         if(!shouldRxStop)
             DMA1_Stream1->CR |= DMA_SxCR_EN;                              
     }
