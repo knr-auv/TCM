@@ -59,5 +59,5 @@ typedef struct
 }COMPROTO_msg_from_okon_t;
 
 void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* msg_struct);
-
+int COMPROTO_ParseHeader(uint8_t* data);
 void COMPROTO_CreateMsg(COMPROTO_msg_from_okon_t* msg);

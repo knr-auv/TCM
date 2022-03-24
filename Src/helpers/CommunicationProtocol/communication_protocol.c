@@ -27,17 +27,27 @@ checksum
 #define MSG_HEADER_1 0x69
 #define MSG_HEADER_2 0x68
 
+uint16_t calculateChecksum(uint8_t* data_p, uint16_t length){
+    uint8_t x;
+    uint16_t crc = 0xFFFF;
 
-static uint16_t calculateChecksum(uint8_t* data, uint16_t len)
-{
-    uint16_t sum = 0;
-    for(uint16_t i =0; i< len;i++)
-    {
-        sum+= data[i];
+    while (length--){
+        x = crc >> 8 ^ *data_p++;
+        x ^= x>>4;
+        crc = (crc << 8) ^ ((uint16_t)(x << 12)) ^ ((uint16_t)(x <<5)) ^ ((uint16_t)x);
     }
-    return sum;
+    return crc;
 }
 
+
+int COMPROTO_ParseHeader(uint8_t* data)
+{
+    if((data[0]!= MSG_HEADER_1)&&(data[1]!=MSG_HEADER_2))
+    {
+        return -1;
+    }
+    return (data[2] <<8)| (data[3]);
+}
 
 void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* msg_struct)
 {
@@ -50,7 +60,7 @@ void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* m
     uint16_t dataLen =  (user_input[2] <<8)| (user_input[3]);
     uint16_t checksum = (user_input[len - 2]<<8)|user_input[len - 1];
 
-    if(checksum!=calculateChecksum(user_input, dataLen + 5))
+    if(checksum!=calculateChecksum(user_input, len-2))
     {
         msg_struct->valid = false;
         return;
