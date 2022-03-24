@@ -11,7 +11,6 @@ typedef struct
     void (*NewDataFlagReset)();
     bool (*CheckTxEnd)();
     uint16_t (*GetReceivedBytes)();
-    uint16_t (*GetSkippedFrames)();
     void (*RXCompleteCallback)();
 }USART_t;
 

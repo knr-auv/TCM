@@ -15,8 +15,6 @@ static uint16_t receivedBytes = 0;
 static bool shouldRxStop = false;
 static uint16_t rx_buffer_size = 0;
 
-static uint16_t skippedFrames = 0;
-
 __attribute__ ((weak)) void USART2_RC_Complete_Callback(){};
 
 void USART2_NewDataFlagReset()
@@ -33,9 +31,7 @@ uint16_t USART2_GetReceivedBytes(void){
     return ret;
 }
 
-uint16_t USART2_GetSkippedFrames(void){
-    return skippedFrames;
-}
+
 
 bool USART2_Check_Tx_end(void){
     return txCompleted;
@@ -81,8 +77,6 @@ void DMA1_Stream5_IRQHandler(void)
     if(DMA1->HISR & DMA_HISR_TCIF5){            //if interupt is TC
         DMA1->HIFCR = DMA_HIFCR_CTCIF5;         //clear tc flag
          new_data = true;
-        if(receivedBytes!=0)                    //check if bytes were readed
-            skippedFrames++;
         receivedBytes = rx_buffer_size - DMA1_Stream5->NDTR;    //we expected USART2_RX_BUFFER_SIZE NDTR keeps how many bytes left to transfe
         memcpy(_rx_buffer,DMA_rx_buffer, receivedBytes);
         USART2_RC_Complete_Callback();

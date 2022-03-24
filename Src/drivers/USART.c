@@ -9,7 +9,6 @@ USART_t USARTs[3] =
     {
         .CheckTxEnd = USART1_Check_Tx_end,
         .GetReceivedBytes = USART1_GetReceivedBytes,
-        .GetSkippedFrames = USART1_GetSkippedFrames,
         .NewDataFlag = USART1_NewDataFlag,
         .NewDataFlagReset = USART1_NewDataFlagReset,
         .ReceiveDMA = USART1_Receive_DMA,
@@ -19,7 +18,6 @@ USART_t USARTs[3] =
     [UART2] = {
         .CheckTxEnd = USART2_Check_Tx_end,
         .GetReceivedBytes = USART2_GetReceivedBytes,
-        .GetSkippedFrames = USART2_GetSkippedFrames,
         .NewDataFlag = USART2_NewDataFlag,
         .NewDataFlagReset = USART2_NewDataFlagReset,
         .ReceiveDMA = USART2_Receive_DMA,
@@ -29,7 +27,6 @@ USART_t USARTs[3] =
     [UART3] = {
         .CheckTxEnd = USART3_Check_Tx_end,
         .GetReceivedBytes = USART3_GetReceivedBytes,
-        .GetSkippedFrames = USART3_GetSkippedFrames,
         .NewDataFlag = USART3_NewDataFlag,
         .NewDataFlagReset = USART3_NewDataFlagReset,
         .ReceiveDMA = USART3_Receive_DMA,
@@ -53,13 +50,7 @@ void USART2_RC_Complete_Callback()
        USARTs[UART2].RXCompleteCallback(); 
     }
 }
-void USART3_RC_Complete_Callback()
-{
-if(USARTs[UART3].RXCompleteCallback)
-    {
-       USARTs[UART3].RXCompleteCallback(); 
-    }
-}
+
 
 USART_t* USART_GetUSART(UART_e usart)
 {

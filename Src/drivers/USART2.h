@@ -8,8 +8,7 @@ void USART2_StopReceiving(void);
 void USART2_NewDataFlagReset();
 bool USART2_NewDataFlag(void);
 bool USART2_Check_Tx_end(void);                 //its important to check it before new operation
-uint16_t USART2_GetReceivedBytes(void);         //returns number of bytes that sits in rx buffer
-uint16_t USART2_GetSkippedFrames(void);         //return number of unhandled frames. Frames is considered handled if USART2_GetReceivedBytes is called
+uint16_t USART2_GetReceivedBytes(void);         //returns number of bytes that sits in rx buffer        //return number of unhandled frames. Frames is considered handled if USART2_GetReceivedBytes is called
 void USART2_RC_Complete_Callback(void);
 
 #endif

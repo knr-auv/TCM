@@ -15,8 +15,8 @@ static uint16_t receivedBytes = 0;
 static bool shouldRxStop = false;
 static uint16_t rx_buffer_size = 0;
 
-static uint16_t skippedFrames = 0;
 __attribute__ ((weak)) void USART3_RC_Complete_Callback(){};
+
 void USART3_NewDataFlagReset()
 {
     new_data=false;
@@ -29,10 +29,6 @@ uint16_t USART3_GetReceivedBytes(void){
     uint16_t ret = receivedBytes;
     receivedBytes = 0;
     return ret;
-}
-
-uint16_t USART3_GetSkippedFrames(void){
-    return skippedFrames;
 }
 
 bool USART3_Check_Tx_end(void){
@@ -78,8 +74,7 @@ void DMA1_Stream1_IRQHandler(void)
     if(DMA1->LISR & DMA_LISR_TCIF1){            //if interupt is TC
         DMA1->LIFCR = DMA_LIFCR_CTCIF1;         //clear tc flag
          new_data = true;
-        if(receivedBytes!=0)                    //check if bytes were readed
-            skippedFrames++;
+     
         receivedBytes = rx_buffer_size - DMA1_Stream1->NDTR;    //we expected USART3_RX_BUFFER_SIZE NDTR keeps how many bytes left to transfe
         memcpy(_rx_buffer,DMA_rx_buffer, receivedBytes);
         memset(DMA_rx_buffer, 0, rx_buffer_size);
