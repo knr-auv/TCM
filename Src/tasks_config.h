@@ -10,3 +10,5 @@
 #define TASK_AUTOMATIONS_HZ         20
 
 #define TASK_DIRECT_MOTORS_CTRL_HZ  50
+
+#define TASK_HEART_BEAT_HZ          2

@@ -25,11 +25,6 @@ void taskSystem(timeUs_t currentTime)
 		totalWaitingTasksSamples = 0;
 		totalWaitingTasks = 0;
 	}
-	LED_HeartBeat_Toggle();
-	#ifdef SYSTEM_HEART_BEAT_ENABLE
-	COMHANDLER_SendHeartBeat();
-	#endif
-
 }
 
 static void clearQueue(void)

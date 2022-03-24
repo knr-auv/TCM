@@ -10,6 +10,7 @@
 #include "operation/CommunicationHandler.h"
 #include "operation/Automations.h"
 #include "operation/DirectThrustersCtrl.h"
+#include "HeartBeat.h"
 
 void taskFun1(timeUs_t t)
 {
@@ -77,6 +78,13 @@ task_t tasks[TASK_COUNT] = {
 			.taskFun = DTCTRL_Task,
 			.desiredPeriod = TASK_PERIOD_HZ(TASK_DIRECT_MOTORS_CTRL_HZ),
 			.staticPriority = TASK_PRIORITY_HIGH},
+	[TASK_HEART_BEAT] =
+	{
+		.taskName = "TASK_HEART_BEAT",
+		.taskFun = HB_Task,
+		.desiredPeriod = TASK_PERIOD_HZ(TASK_HEART_BEAT_HZ),
+		.staticPriority = TASK_PRIORITY_HIGH},
+	
 	};
 
 void initTasks(void)

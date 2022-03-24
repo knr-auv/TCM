@@ -24,7 +24,6 @@ bool DTCTRL_Timeout()
     {
         lastTime = lastTimeDirect;
     }
-    timeUs_t out = micros()-lastTime;
     if((micros()-lastTime)>=TIMEOUT)
         return true;
     else return false;

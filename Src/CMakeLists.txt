@@ -23,6 +23,7 @@ helpers/CommunicationProtocol/communication_protocol.c
 
 scheduler/scheduler.c
 tasks/tasks.c
+tasks/HeartBeat.c
 
 Config/Limits.c
 Config/memory.c
