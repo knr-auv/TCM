@@ -36,18 +36,26 @@ USART_t USARTs[3] =
     }
 };
 
-void USART1_RC_Complete_Callback()
+void USART1_RX_Complete_Callback()
 {
     if(USARTs[UART1].RXCompleteCallback)
     {
        USARTs[UART1].RXCompleteCallback(); 
     }
 }
-void USART2_RC_Complete_Callback()
+void USART2_RX_Complete_Callback()
 {
     if(USARTs[UART2].RXCompleteCallback)
     {
        USARTs[UART2].RXCompleteCallback(); 
+    }
+}
+
+void USART3_RX_Complete_Callback()
+{
+    if(USARTs[UART3].RXCompleteCallback)
+    {
+       USARTs[UART3].RXCompleteCallback(); 
     }
 }
 

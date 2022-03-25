@@ -5,7 +5,8 @@
 #include "CommunicationHandler.h"
 #include "DirectThrustersCtrl.h"
 #include "Config/memory.h"
-
+#include "IO/LED.h"
+#include "tasks/HeartBeat.h"
 bool ServiceModeActive = false;
 
 void EnterServiceMode();
@@ -85,4 +86,6 @@ void EnterServiceMode()
     ServiceModeActive = true;
 	enableTask(TASK_CONTROL_LOOP, false);
 	enableTask(TASK_AUTOMATIONS, false);
+    LED_HeartBeat_Set(true);
+    //HB_DisablePacket();
 }

@@ -98,4 +98,5 @@ void initTasks(void)
 	enableTask(TASK_LED_TEST, false);
 	enableTask(TASK_AUTOMATIONS, true);
 	enableTask(TASK_DIRECT_MOTORS_CTRL, false);
+	enableTask(TASK_HEART_BEAT, true);
 }

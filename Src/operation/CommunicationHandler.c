@@ -21,61 +21,93 @@ COMPROTO_msg_from_okon_t msg_from_okon;
 
 static USART_t uart;
 
+enum
+{
+    NEW_MSG,
+    CHUNK
+}msg_status;
+static bool new_msg = false;
+static uint16_t received_bytes = 0;
+uint16_t msg_len =0;
 
 void HandleRequestMsg(COMPROTO_msg_info_t *msg);
 void HandleSticksMsg(COMPROTO_msg_info_t *msg);
 void HandeModeMsg(COMPROTO_msg_info_t *msg);
 void HandleCLStatusMsg(COMPROTO_msg_info_t *msg);
-
+void uart_rxEnd_irq();
 
 timeUs_t COMHANDLER_TimeSinceLastUpdate()
 {
     return micros()-last_time;
 }
 
+void rx_ir()
+{
+     uart.ReceiveDMA(rx_buffer, CONFIG_COMM_HANDLER_BUFFER_LEN);
+}
 void COMHANDLER_Init()
 {
-    uart = *USART_GetUSART(CONFIG_COMM_HANDLER_USART);
+    USART_t* temp = USART_GetUSART(CONFIG_COMM_HANDLER_USART);
+    temp->RXCompleteCallback = uart_rxEnd_irq;
+    uart = *temp;
     uart.ReceiveDMA(rx_buffer, CONFIG_COMM_HANDLER_BUFFER_LEN);
     msg_from_okon.tx_buffer = tx_buffer;
 }
 
 bool COMHANDLER_CheckFun(timeUs_t currentTime, timeUs_t deltaTime)
 {
+    last_time = currentTime;
 
-    if(uart.NewDataFlag())
+    return new_msg;
+}
+void uart_rxEnd_irq()
+{
+    if(msg_status == NEW_MSG)
     {
-        last_time = currentTime;
-        return true;
+        int len = COMPROTO_ParseHeader(rx_buffer);
+        if((len==-1)||(len>CONFIG_COMM_HANDLER_BUFFER_LEN))
+            {
+                uart.ReceiveDMA(rx_buffer, CONFIG_COMM_HANDLER_BUFFER_LEN);
+                return;
+            }
+        msg_len = 7+len;
+        if((msg_len) == uart.GetReceivedBytes())
+        {
+            received_bytes = msg_len;
+            new_msg = true;
+        }
+        else
+        {
+            msg_status = CHUNK;
+            uint16_t count = uart.GetReceivedBytes();
+            received_bytes = count;
+            uart.ReceiveDMA(rx_buffer+count, msg_len-count);
+        }
     }
-    return false;
-}
-
-void COMHANDLER_SendResponse(uint8_t* data, uint8_t len)
-{
-    uart.TransmitDMA(data, len);
-}
-void COMHANDLER_SendConfirmation(uint8_t data)
-{
-    msg_from_okon.user_data_len = 1;
-    msg_from_okon.type = MSG_FROM_OKON_SERVICE_CONFIRM;
-    uint8_t buff[1];
-    msg_from_okon.user_data = buff;
-    msg_from_okon.user_data[0]= data;
-    COMPROTO_CreateMsg(&msg_from_okon); 
-    COMHANDLER_SendResponse(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
+    else if(msg_status == CHUNK)
+    {
+        received_bytes+= uart.GetReceivedBytes();
+        if((received_bytes)<msg_len)
+        {
+           uart.ReceiveDMA(rx_buffer+received_bytes, msg_len-received_bytes);
+        }
+        else
+        {
+         msg_status = NEW_MSG;
+         new_msg = true;   
+        }
+    }
 }
 void COMHANDLER_Task(timeUs_t t)
 {
-    if(!uart.NewDataFlag())
-    {
-        return;
-    }
-   uart.NewDataFlagReset();
-   uint16_t len = uart.GetReceivedBytes();
-   COMPROTO_ParseMsg(rx_buffer, len, &msg);
+    new_msg = false;
+   
+   COMPROTO_ParseMsg(rx_buffer, received_bytes, &msg);
    if(!msg.valid)
+   {
+       uart.ReceiveDMA(rx_buffer, CONFIG_COMM_HANDLER_BUFFER_LEN);
     return;
+   }
 
    switch (msg.msg_type)
    {
@@ -98,6 +130,23 @@ void COMHANDLER_Task(timeUs_t t)
    default:
        break;
    }
+   uart.ReceiveDMA(rx_buffer, CONFIG_COMM_HANDLER_BUFFER_LEN);
+}
+
+
+void COMHANDLER_SendResponse(uint8_t* data, uint8_t len)
+{
+    uart.TransmitDMA(data, len);
+}
+void COMHANDLER_SendConfirmation(uint8_t data)
+{
+    msg_from_okon.user_data_len = 1;
+    msg_from_okon.type = MSG_FROM_OKON_SERVICE_CONFIRM;
+    uint8_t buff[1];
+    msg_from_okon.user_data = buff;
+    msg_from_okon.user_data[0]= data;
+    COMPROTO_CreateMsg(&msg_from_okon); 
+    COMHANDLER_SendResponse(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
 }
 
 void HandleRequestMsg(COMPROTO_msg_info_t *msg)

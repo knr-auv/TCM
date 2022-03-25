@@ -19,7 +19,7 @@ UART3 is marked as external UART
 #define USART3_BAUD 115200
 
 #define CONFIG_COMM_HANDLER_BUFFER_LEN     254
-#define CONFIG_COMM_HANDLER_USART          UART1
+#define CONFIG_COMM_HANDLER_USART          UART3
 
 #define CONFIG_UM7_RX_BUFFER_SIZE          100    
 #define CONFIG_UM7_TX_BUFFER_SIZE          40

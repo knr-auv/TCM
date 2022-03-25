@@ -6,7 +6,7 @@
         {
             "label": "Make Firmware",
             "type": "shell",
-            "command": "make --always-make all -j6",
+            "command": "make --always-make all -j18",
             "options": {
                 "cwd": "${workspaceRoot}/build"
             },

@@ -116,6 +116,7 @@ void UM7_RC_Complete_Callback(void)
         else if (packet.address == DREG_EULER_PHI_THETA)
             UM7_HandleEulerAnglesPacket(&packet);
     }
+    uart.ReceiveDMA(rx_buffer, CONFIG_UM7_RX_BUFFER_SIZE);
 }
 bool UM7_Init(void)
 {
