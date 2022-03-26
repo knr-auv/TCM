@@ -99,3 +99,8 @@ THRUSTER_8 = T_INIT_VALUE;
 float THRUSTERS_map(float x, float in_min, float in_max) {
   return (x - in_min) * (T_MAX_VALUE - T_MIN_VALUE) / (in_max - in_min) + T_MIN_VALUE;
 }
+
+void THRUSTERS_IronManFan(uint16_t pwm)
+{
+    TIM2->CCR1 = pwm;
+}

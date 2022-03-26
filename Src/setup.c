@@ -116,6 +116,10 @@ static void initGPIO(void)
     GPIOA->AFR[0] |= ((0x2 << 24) | (0x2 << 28));
     GPIOB->AFR[0] |= (0x2 | 0x2 << 4);
     GPIOE->AFR[1] |= ((0x1 << 24) | (0x1 << 20) | (0x1 << 12) | (0x1 << 4));
+    /* iron man fan*/
+    GPIOA->MODER &= ~(GPIO_MODER_MODER5 );
+    GPIOA->MODER &= ~(GPIO_MODER_MODER5_1 );
+    GPIOA->AFR[0] |= (0x2 << 16);
 
     /* onboard analog sensors */
     GPIOA->MODER |= (GPIO_MODER_MODER0 | GPIO_MODER_MODER1); //temperature and humidity sensor  -   analog mode
@@ -317,18 +321,30 @@ void initTIM1(void)
     TIM1->CCR4 = 1500; // PWM length channel 4 (1 [ms])
     TIM1->EGR |= TIM_EGR_UG;
 }
-void initTIM2(void){    //free running timer for time counting
+void initTIM2(void)
+{
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
     //Timer clock is 84Mhz
-    //32bit cnt register
+
+    // register is buffered and only overflow generate interrupt:
     TIM2->CR1 |= TIM_CR1_ARPE | TIM_CR1_URS;
-    TIM2->PSC = 84 - 1; //1us 1 count
-    TIM2->ARR = 1000000 - 1; //reload every second
-    TIM2->DIER |= TIM_DIER_UIE;
+
+    // PWM mode 1 and output compare 1 preload enable:
+    TIM2->CCMR1 |= TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1PE;
+
+    //channel 1 enable:
+    TIM2->CCER |= TIM_CCER_CC1E;
+    //84Mhz
+    TIM2->PSC = 84 - 1;  // ticke per us
+    TIM2->ARR = 1000 - 1; //  count to 2500us (it gives 400Hz)
+
+    TIM2->CCR1 = 0; // PWM length channel 1 (1 [ms])
+
+    //	TIM2 enabling:
     TIM2->EGR |= TIM_EGR_UG;
-	TIM2->CR1 |= TIM_CR1_CEN;
-    NVIC_EnableIRQ(TIM2_IRQn);
+    TIM2->CR1 |= TIM_CR1_CEN;
 }
+
 void initTIM3(void)
 {
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
@@ -367,7 +383,18 @@ void initTIM3(void)
     TIM3->EGR |= TIM_EGR_UG;
     TIM3->CR1 |= TIM_CR1_CEN;
 }
-
+void initTIM5(void){    //free running timer for time counting
+    RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
+    //Timer clock is 84Mhz
+    //32bit cnt register
+    TIM5->CR1 |= TIM_CR1_ARPE | TIM_CR1_URS;
+    TIM5->PSC = 84 - 1; //1us 1 count
+    TIM5->ARR = 1000000 - 1; //reload every second
+    TIM5->DIER |= TIM_DIER_UIE;
+    TIM5->EGR |= TIM_EGR_UG;
+	TIM5->CR1 |= TIM_CR1_CEN;
+    NVIC_EnableIRQ(TIM5_IRQn);
+}
 
 void initADC1(void)
 {   //APB2 clock i s 84MHz
@@ -435,6 +462,7 @@ void initSystem()
     initTIM1();
     initTIM2();
     initTIM3();
+    initTIM5();
     initADC1();
     initINT();
 

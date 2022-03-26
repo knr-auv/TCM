@@ -5,7 +5,7 @@
 
 
 
-
+void THRUSTERS_IronManFan(uint16_t pwm);
 void setThrusters(uint16_t* out);
 void setThruster(uint32_t thruster, uint32_t value);
 void initThrusters();
