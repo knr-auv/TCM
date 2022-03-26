@@ -5,8 +5,8 @@
 #include <stdbool.h>
 
 #define T_INIT_VALUE 1500.f
-#define T_MAX_VALUE 1600.f
-#define T_MIN_VALUE 1400.f
+#define T_MAX_VALUE 1900.f
+#define T_MIN_VALUE 1100.f
 
 #define THRUSTER_1  TIM1->CCR4
 #define THRUSTER_2  TIM3->CCR4
@@ -33,7 +33,7 @@ void resetThrusters_pwm_t(uint16_t *out)
 void setThrusters(uint16_t *out)
 {
     if(!allow_update)
-      ;//  return;
+         return;
     THRUSTER_1 = (uint32_t)out[0];
     THRUSTER_2 = (uint32_t)out[1];
     THRUSTER_3 = (uint32_t)out[2];
@@ -58,7 +58,7 @@ void initThrusters()
     THRUSTER_6 = T_INIT_VALUE;
     THRUSTER_7 = T_INIT_VALUE;
     THRUSTER_8 = T_INIT_VALUE;
-    DelayMs(7000);
+    DelayMs(500);
 }
 
 void deinitThrusters()

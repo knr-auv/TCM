@@ -4,7 +4,7 @@
 #include "time/time.h"
 
 void COMHANDLER_SendResponse(uint8_t* data, uint8_t len);
-bool COMHANDLER_CheckFun();
+bool COMHANDLER_CheckFun(timeUs_t currentTime, timeUs_t deltaTime);
 void COMHANDLER_Init();
 void COMHANDLER_Task(timeUs_t t);
 

@@ -406,6 +406,20 @@ void initADC1(void)
     DMA2_Stream0->CR |= DMA_SxCR_TCIE;  //enable transfer complete interruot
     NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 }
+
+void watchdogInit()
+{
+    RCC->CSR |= RCC_CSR_LSION;
+    while((RCC->CSR & RCC_CSR_LSIRDY) == 0)  { ; };
+    //LSI is 32 000 Hz
+    IWDG->KR = 0x5555;      /* Enable access to IWDG_PR */
+    IWDG->PR = IWDG_PR_PR_0|IWDG_PR_PR_1;           /* Set prescaler Value*/
+    IWDG->RLR = 1000;       /* Set counter value */
+    IWDG->KR = 0xaaaa;      /* Clear data, set counter to max (In out case 1000) value */
+    IWDG->KR = 0xcccc;      /* Enable IWDG */
+    //to reset watchdog do:
+    IWDG->KR = 0xaaaa;
+}
 void initSystem()
 {
     initCLOCK();
@@ -423,4 +437,6 @@ void initSystem()
     initTIM3();
     initADC1();
     initINT();
+
+    //watchdogInit();
 } 

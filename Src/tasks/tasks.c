@@ -58,7 +58,7 @@ task_t tasks[TASK_COUNT] = {
 			.taskFun = COMHANDLER_Task,
 			.checkFun = COMHANDLER_CheckFun,
 			.desiredPeriod = TASK_PERIOD_HZ(TASK_COMM_HANDLER_HZ),
-			.staticPriority = TASK_PRIORITY_HIGH},
+			.staticPriority = TASK_PRIORITY_REALTIME},
 	[TASK_LED_TEST] = 
 		{
 			.taskName = "TASK_LED_TEST",

@@ -10,8 +10,8 @@
 timeUs_t lastTimeDirect = 0;
 timeUs_t lastTimeMatrix = 0;
 
-float Motors[8];
-float Control_out[5];
+static float Motors[8];
+static float Control_out[5];
 
 bool DTCTRL_Timeout()
 {

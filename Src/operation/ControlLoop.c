@@ -38,12 +38,12 @@ Control:
 #define CONTROL_OUTPUTS 5
 
 
-float control_thrusters_matrix[CONTROL_OUTPUTS*THRUSTERS_COUNT];
-float control_out[CONTROL_OUTPUTS];
+static float control_thrusters_matrix[CONTROL_OUTPUTS*THRUSTERS_COUNT];
+static float control_out[CONTROL_OUTPUTS];
 float thrusters_out[THRUSTERS_COUNT];
 
-cl_status_e status;
-cl_mode_e mode;
+static cl_status_e status;
+static cl_mode_e mode;
 
 static PID_t pid_roll;
 static PID_t pid_pitch;
@@ -55,7 +55,7 @@ static float yaw_level_gain;
 quaternion_t Qref;
 quaternion_t Qerror;
 quaternion_t *QImu;
-float ref_ang_velocity[3];
+static float ref_ang_velocity[3];
 
 
 
