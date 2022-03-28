@@ -8,7 +8,7 @@
 #define T_MAX_VALUE 1900.f
 #define T_MIN_VALUE 1100.f
 
-#define THRUSTER_1  TIM1->CCR4
+#define THRUSTER_1  TIM1->CCR3
 #define THRUSTER_2  TIM3->CCR4
 #define THRUSTER_3  TIM1->CCR4
 #define THRUSTER_4  TIM3->CCR3

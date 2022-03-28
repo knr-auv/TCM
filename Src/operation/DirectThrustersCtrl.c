@@ -5,7 +5,7 @@
 #include "IO/thrusters.h"
 #include "helpers/common.h"
 #include "scheduler/scheduler.h"
-#define TIMEOUT 500000
+#define TIMEOUT 1000000
 
 timeUs_t lastTimeDirect = 0;
 timeUs_t lastTimeMatrix = 0;

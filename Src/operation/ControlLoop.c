@@ -139,8 +139,8 @@ void StableMode(float dt) //dt is us
     ref_ang_velocity[0] = Qerror.i * dt * roll_level_gain;
     ref_ang_velocity[1] = Qerror.j * dt * pitch_level_gain;
     ref_ang_velocity[2] = direct_yaw_input;//Qerror.k * dt * yaw_level_gain;
-    control_out[3] = stick_input[3];
-    control_out[4] = stick_input[4];
+    control_out[3] = stick_input[3]*0.3;
+    control_out[4] = stick_input[4]*0.3;
 }
 
 void CL_TaskFun(timeUs_t t)
