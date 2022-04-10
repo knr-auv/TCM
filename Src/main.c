@@ -19,7 +19,7 @@ void init(void)
     COMHANDLER_Init();
     initScheduler();
     initTasks();
-   // MEM_SaveSettings();
+
 }
 
 int main(void)

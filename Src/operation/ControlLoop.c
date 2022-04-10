@@ -145,15 +145,16 @@ void StableMode(float dt) //dt is us
 
 void CL_TaskFun(timeUs_t t)
 {
-    float dt = (t - last_time)/(float)1000000;
-    last_time = t;
-    modeFun[mode](dt);
-    PID_update(&pid_roll, ref_ang_velocity[0], dt);
-    PID_update(&pid_pitch, ref_ang_velocity[1], dt);
-    PID_update(&pid_yaw, ref_ang_velocity[2], dt);
-    control_out[0] = pid_roll.output;
-    control_out[1] = pid_pitch.output;
-    control_out[2] = pid_yaw.output;
+    // float dt = (t - last_time)/(float)1000000;
+    // last_time = t;
+    // modeFun[mode](dt);
+    // PID_update(&pid_roll, ref_ang_velocity[0], dt);
+    // PID_update(&pid_pitch, ref_ang_velocity[1], dt);
+    // PID_update(&pid_yaw, ref_ang_velocity[2], dt);
+    float* stick_input = STICK_GetSticks();
+    for(uint8_t i =0; i<5;i++)
+        control_out[i] = stick_input[i];
+
     update_outputs();
     set_motors();
 }

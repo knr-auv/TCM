@@ -16,11 +16,11 @@ bool missionStarted = false;
 void AUTOMATIONS_Task(timeUs_t t)
 {
     Mission();
-    if(!missionStarted){
-    HandleStickTimeout();
-    HandleCommHandlerTimeout();
-    StickArm();
-    }
+    //if(!missionStarted){
+    //HandleStickTimeout();
+    //HandleCommHandlerTimeout();
+    //StickArm();
+    //}
 }
 
 int counter = 0;
