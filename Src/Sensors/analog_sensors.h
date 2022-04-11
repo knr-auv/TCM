@@ -10,3 +10,6 @@ float ANALOG_onboardTemp(void);
 float ANALOG_CPUTemp(void);
 
 float ANALOG_onboardHumidity(void);
+
+void ANALOG_ProcesRAW(void);
+void ANALOG_Init();

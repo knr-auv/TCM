@@ -35,6 +35,8 @@ operation/DirectThrustersCtrl.c
 operation/Automations.c
 operation/ServiceMode.c
 
+Variables/variables.c
+
 telemetry/telemetry_debug.c
 
 interrupts.c

@@ -44,13 +44,13 @@ void USART2_Transmit_DMA(uint8_t* tx_buffer, uint16_t len){
     DMA1_Stream6->NDTR = len;
     DMA1_Stream6->CR |= DMA_SxCR_EN;
 }
-timeUs_t time = 0;
+static timeUs_t time = 0;
 void USART2_Receive_DMA(uint8_t* rx_buffer, uint16_t buffer_size){
     rx_buffer_size = buffer_size;
 
     DMA1_Stream5->CR&= ~(DMA_SxCR_EN);      //disable dma rx
     time = micros();
-    while(DMA1_Stream5->CR&DMA_SxCR_EN);    //wait for it
+    while(DMA1_Stream5->CR&DMA_SxCR_EN)    //wait for it
     {
         if(micros()-time>1000)
         {

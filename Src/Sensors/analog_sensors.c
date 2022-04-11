@@ -2,6 +2,7 @@
 #include <string.h>
 #include "time/time.h"
 #include <stdbool.h>
+#include "Variables/variables.h"
 
 #define ADC1_VREF  3.3f
 #define SHT3x_v 3.3f
@@ -16,11 +17,22 @@ typedef enum{
 uint16_t raw_samples[SAMPLES][SENSOR_COUNT];
 uint16_t raw_data[SENSOR_COUNT];
 
+static float _cpu_temp = 0;
+static float _onboard_Humidity = 0;
+static float _onboard_Temp = 0;
 static bool enabled = false;
+
+
 
 bool ANALOG_IsEnabled()
 {
     return enabled;
+}
+void ANALOG_Init()
+{
+    VAR_SetSysFloat(&_cpu_temp, VAR_SENSOR_CPU_TEMP);
+    VAR_SetSysFloat(&_onboard_Humidity, VAR_SENSOR_ONBOARD_HUMMIDITY);
+    VAR_SetSysFloat(&_onboard_Temp, VAR_SENSOR_ONBOARD_TEMP);
 }
 void ANALOG_Enable()
 {
@@ -52,8 +64,9 @@ void ANALOG_Disable(){
 
 void ANALOG_beginConversion(void)
 {
-    if(enabled)
+    if(enabled){
         ADC1->CR2 |= ADC_CR2_SWSTART;
+        }
 }
 void avg_value(uint32_t *dst, sensors_map_e sensor){
     *(dst) = 0;
@@ -63,6 +76,7 @@ void avg_value(uint32_t *dst, sensors_map_e sensor){
     }
     *(dst) /=SAMPLES;
 }
+
 float ANALOG_onboardTemp(void){
     uint32_t sensor_data;
     avg_value(&sensor_data, SENSOR_ONBOARD_TEMP);
@@ -79,6 +93,12 @@ float ANALOG_onboardHumidity(void){
     uint32_t sensor_data;
   avg_value(&sensor_data, SENSOR_ONBOARD_HUMIDITY);
     return -12.5 + 125*(sensor_data/(float)4095)*ADC1_VREF/SHT3x_v;;
+}
+void ANALOG_ProcesRAW()
+{
+    _cpu_temp = ANALOG_CPUTemp();
+    _onboard_Humidity = ANALOG_onboardHumidity();
+    _onboard_Temp = ANALOG_onboardTemp();
 }
 void ANALOG_stopConversion(void)
 {

@@ -13,6 +13,7 @@
 #include "IO/Sticks.h"
 #include "Config/Limits.h"
 #include "DirectThrustersCtrl.h"
+#include "Variables/variables.h"
 #define MAX_OUTPUT 1.f
 #define MIN_OUTPUT -1.f
 
@@ -41,6 +42,7 @@ Control:
 static float control_thrusters_matrix[CONTROL_OUTPUTS*THRUSTERS_COUNT];
 static float control_out[CONTROL_OUTPUTS];
 float thrusters_out[THRUSTERS_COUNT];
+uint16_t PWMout[THRUSTERS_COUNT];
 
 static cl_status_e status;
 static cl_mode_e mode;
@@ -56,7 +58,7 @@ quaternion_t Qref;
 quaternion_t Qerror;
 quaternion_t *QImu;
 static float ref_ang_velocity[3];
-
+static float *ang_vel;
 
 
 static timeUs_t last_time = 0;
@@ -95,7 +97,7 @@ void CL_Init()
 {
     status = CL_STATUS_DISARMED;
     mode = CL_MODE_STABLE;
-
+    ang_vel= IMU_GetAngVelPointer();
     PID_initialize(&pid_roll, 4, 1.5, 1, 10);
     PID_initialize(&pid_pitch, 4, 1.5, 1.5, 10);
     PID_initialize(&pid_yaw, 4, 0, 0, 10);
@@ -105,6 +107,28 @@ void CL_Init()
     pitch_level_gain = 5;
     roll_level_gain = 5;
     yaw_level_gain = 5;
+
+    VAR_SetSysFloat(&Qref.r, VAR_CL_ATTITUDE_REF_Q_r);
+    VAR_SetSysFloat(&Qref.i, VAR_CL_ATTITUDE_REF_Q_i);
+    VAR_SetSysFloat(&Qref.j, VAR_CL_ATTITUDE_REF_Q_j);
+    VAR_SetSysFloat(&Qref.k, VAR_CL_ATTITUDE_REF_Q_k);
+
+    VAR_SetSysFloat(&QImu->r, VAR_ATTITUDE_Q_r);
+    VAR_SetSysFloat(&QImu->i, VAR_ATTITUDE_Q_i);
+    VAR_SetSysFloat(&QImu->j, VAR_ATTITUDE_Q_j);
+    VAR_SetSysFloat(&QImu->k, VAR_ATTITUDE_Q_k);
+
+    VAR_SetSysFloat(&ang_vel[0], VAR_GYRO_r);
+    VAR_SetSysFloat(&ang_vel[1], VAR_GYRO_p);
+    VAR_SetSysFloat(&ang_vel[2], VAR_GYRO_y);
+    VAR_SetSysFloat(&ref_ang_velocity[0], VAR_CL_GYRO_REF_r);
+    VAR_SetSysFloat(&ref_ang_velocity[1], VAR_CL_GYRO_REF_p);
+    VAR_SetSysFloat(&ref_ang_velocity[2], VAR_CL_GYRO_REF_y);
+
+    for(uint8_t i =0; i< THRUSTERS_COUNT; i++)
+    {
+        VAR_SetSysFloat(&thrusters_out[i], VAR_CL_THRUSTER1_OUT + i);
+    }
 }
 
 
@@ -147,10 +171,12 @@ void CL_TaskFun(timeUs_t t)
 {
     float dt = (t - last_time)/(float)1000000;
     last_time = t;
+    
     modeFun[mode](dt);
-    PID_update(&pid_roll, ref_ang_velocity[0], dt);
-    PID_update(&pid_pitch, ref_ang_velocity[1], dt);
-    PID_update(&pid_yaw, ref_ang_velocity[2], dt);
+
+    PID_update(&pid_roll, ref_ang_velocity[0] - ang_vel[0], dt);
+    PID_update(&pid_pitch, ref_ang_velocity[1] - ang_vel[1], dt);
+    PID_update(&pid_yaw, ref_ang_velocity[2]- ang_vel[2], dt);
     control_out[0] = pid_roll.output;
     control_out[1] = pid_pitch.output;
     control_out[2] = pid_yaw.output;
@@ -163,16 +189,15 @@ void update_outputs()
 {
 
     COMMON_mat_vec_mul(control_thrusters_matrix, control_out, thrusters_out, THRUSTERS_COUNT, CONTROL_OUTPUTS);
-    COMMON_linear_saturation(thrusters_out,THRUSTERS_COUNT, MAX_OUTPUT);
-    
+    COMMON_linear_saturation(thrusters_out,THRUSTERS_COUNT, MAX_OUTPUT);    
 }
-uint16_t out[THRUSTERS_COUNT];
+
 void set_motors()
 {
     
     for(uint8_t i =0; i<THRUSTERS_COUNT;i++)
-        out[i] = THRUSTERS_map(thrusters_out[i], MIN_OUTPUT, MAX_OUTPUT);
-    setThrusters(out);
+        PWMout[i] = THRUSTERS_map(thrusters_out[i], MIN_OUTPUT, MAX_OUTPUT);
+    setThrusters(PWMout);
 }
 
 void CL_Arm()
@@ -191,14 +216,7 @@ void CL_SetMode(cl_mode_e mode)
 {
     mode = mode;
 }
-float *CL_GetMotorOutputs()
-{
-    return thrusters_out;
-}
-uint16_t* CL_GetThrustersValue()
-{
-    return out;
-}
+
 cl_status_e CL_GetStatus()
 {
     return status;

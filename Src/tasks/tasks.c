@@ -11,6 +11,7 @@
 #include "operation/Automations.h"
 #include "operation/DirectThrustersCtrl.h"
 #include "HeartBeat.h"
+#include "Variables/variables.h"
 
 void taskFun1(timeUs_t t)
 {
@@ -23,6 +24,7 @@ void taskFun2(timeUs_t t)
 void TASK_read_analog_sensors(timeUs_t t)
 {
 	ANALOG_beginConversion();
+	ANALOG_ProcesRAW();
 }
 
 task_t tasks[TASK_COUNT] = {

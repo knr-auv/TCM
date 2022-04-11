@@ -126,12 +126,12 @@ void HandleStickTimeout()
 {
     if(STICK_TimeSinceLastUpdate()>AUTOMATIONS_STICK_TIMEOUT)
     {
-        float* v =STICK_GetSticks();
-        if(v[6]>0.5f)
-        {
-            missionShouldStart = true;
-        }
-        STICK_ResetSticks();
+        // float* v =STICK_GetSticks();
+        // if(v[6]>0.5f)
+        // {
+        //     missionShouldStart = true;
+        // }
+         STICK_ResetSticks();
         if(CL_GetStatus()==CL_STATUS_ARMED)
             CL_Disarm();
     }

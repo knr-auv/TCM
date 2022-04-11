@@ -39,7 +39,7 @@ void USART3_Transmit_DMA(uint8_t* tx_buffer, uint16_t len){
     DMA1_Stream3->NDTR = len;
     DMA1_Stream3->CR |= DMA_SxCR_EN;
 }
-timeUs_t time = 0;
+static timeUs_t time = 0;
 
 void USART3_Receive_DMA(uint8_t* rx_buffer, uint16_t buffer_size){
     rx_buffer_size = buffer_size;

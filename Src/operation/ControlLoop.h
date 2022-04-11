@@ -16,8 +16,7 @@ typedef enum
 }cl_mode_e;
 
 void CL_Init();
-float* CL_GetMotorOutputs();
-uint16_t* CL_GetThrustersValue();
+
 void CL_TaskFun(timeUs_t t);
 
 void CL_Arm();
