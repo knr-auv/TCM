@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include "time/time.h"
 #include "config.h"
 #include "stm32f4xx.h"
 
@@ -14,7 +15,7 @@ static uint16_t receivedBytes = 0;
 static bool new_data = false;
 static uint16_t rx_buffer_size = 0;
 
- void USART1_RX_Complete_Callback();
+void USART1_RX_Complete_Callback();
 
 void USART1_NewDataFlagReset()
 {
@@ -43,10 +44,19 @@ void USART1_Transmit_DMA(uint8_t* tx_buffer, uint16_t len){
     DMA2_Stream7->CR |= DMA_SxCR_EN;
 }
 
+timeUs_t time = 0;
 void USART1_Receive_DMA(uint8_t* rx_buffer, uint16_t buffer_size){
     rx_buffer_size = buffer_size;
     DMA2_Stream5->CR&= ~(DMA_SxCR_EN);      //disable dma rx
-    while(DMA2_Stream5->CR&DMA_SxCR_EN);    //wait for it
+    time = micros();
+    while(DMA2_Stream5->CR&DMA_SxCR_EN)
+    {
+        if(micros()-time>1000)
+        {
+            DMA2_Stream5->CR&= ~(DMA_SxCR_EN);
+            return;
+        }
+    }
     DMA2_Stream5->M0AR = (uint32_t)rx_buffer;
     DMA2_Stream5->NDTR = buffer_size; 
     DMA2_Stream5->CR |= DMA_SxCR_EN;   

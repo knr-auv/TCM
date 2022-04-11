@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include "time/time.h"
 #include "config.h"
 #include "stm32f4xx.h"
 
@@ -38,11 +39,18 @@ void USART3_Transmit_DMA(uint8_t* tx_buffer, uint16_t len){
     DMA1_Stream3->NDTR = len;
     DMA1_Stream3->CR |= DMA_SxCR_EN;
 }
+timeUs_t time = 0;
 
 void USART3_Receive_DMA(uint8_t* rx_buffer, uint16_t buffer_size){
     rx_buffer_size = buffer_size;
     DMA1_Stream1->CR&= ~(DMA_SxCR_EN);      //disable dma rx
-    while(DMA1_Stream1->CR&DMA_SxCR_EN);    //wait for it
+    time = micros();
+    while(DMA1_Stream1->CR&DMA_SxCR_EN)    //wait for it
+            if(micros()-time>1000)
+        {
+            DMA2_Stream5->CR&= ~(DMA_SxCR_EN);
+            return;
+        }
     DMA1_Stream1->M0AR = (uint32_t)rx_buffer;
     DMA1_Stream1->NDTR = buffer_size; 
     DMA1_Stream1->CR |= DMA_SxCR_EN;   
