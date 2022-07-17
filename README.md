@@ -1,5 +1,15 @@
 
-
+# TODO
+* Optimize measurements so all the data is stored ONLY in system variable.
+* Add second IMU
+* Add filtering to IMU data
+* Add depth sensing
+* Test control loops
+* Add packet for telemetry setup
+* Allow multiple telemetry links
+* Add tasks stats to system variables
+* Reorganize control loop so info about used PID controlers, variables etc can be stored in configuration file
+* Implementation of EKF 
 # Comunication protocol
 Each message sended from and to TCM must follow protocol described in this section.
 The bit order is LSB first.
@@ -14,7 +24,7 @@ The bit order is LSB first.
 | Payload length MSB |  byte  |  
 | Payload length LSB |   byte |
 |Message type      | byte|
-| Payload|0 - 255|
+| Payload|0 - 500|
 |Checksum MSB|byte|
 |Checksum LSB|byte|
 
@@ -84,13 +94,17 @@ For now the only option to control the boat is using sticks
 
 | Type       | value |
 |-----------------|------|
-| Data              |  0x3  |   
-| Heart beat        |  0x4  |  
-| Service confirm   |  0x5  |  
-| Telemetry        |  0x6  | 
+| PID              |  0x3  |   
+| Control matrix   |  0x4  |  
+| Heart beat       |  0x5  |  
+| Service confirm  |  0x6  |  
+| Telemetry        |  0x7  | 
+| Variable         |  0x8  | 
 
-#### Data 
-Data message is an answer to 'Request data' packet.
+
+#### PID 
+
+
 
 #### Heart beat 
 TCM is sending heart beat packet twice a second.
@@ -99,9 +113,4 @@ TCM is sending heart beat packet twice a second.
 After each service message received TCM is responding with this packet.
 
 #### Telemetry
-
-
-
-
-
 
