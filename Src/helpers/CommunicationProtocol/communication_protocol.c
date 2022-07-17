@@ -71,13 +71,12 @@ void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* m
     uint8_t *data = user_input+5;
 
 
-    if((Packet_type>=0)&(Packet_type<MSG_OKON_TYPE_COUNT))
+    if((Packet_type>=0)&(Packet_type<MSG_TYPE_COUNT))
     {
         msg_struct->valid = true;
         msg_struct->data = data;
         msg_struct->msg_type = Packet_type;
         msg_struct->len = dataLen;
-        msg_struct->specific = 0;
     }
     else
     {
@@ -85,9 +84,8 @@ void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* m
         return;
     }
         
-    if((Packet_type==MSG_OKON_REQUEST)||(Packet_type==MSG_OKON_SERVICE))
+    if((Packet_type==MSG_TYPE_REQUEST)||(Packet_type==MSG_TYPE_SERVICE))
     {
-        msg_struct->specific = data[0];
         msg_struct->data++;
         msg_struct->len--;
     }
@@ -95,7 +93,7 @@ void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* m
     return;
 }
 
-void COMPROTO_CreateMsg(COMPROTO_msg_from_okon_t* msg)
+void COMPROTO_CreateMsg(COMPROTO_msg_t* msg)
 {
     msg->tx_buffer_len = 7 + msg->user_data_len;
     msg->tx_buffer[0] = MSG_HEADER_1;

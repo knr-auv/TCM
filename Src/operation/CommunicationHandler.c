@@ -17,7 +17,7 @@ static uint8_t tx_buffer[CONFIG_COMM_HANDLER_BUFFER_LEN];
 
 timeUs_t last_time = 0;
 COMPROTO_msg_info_t msg;
-COMPROTO_msg_from_okon_t msg_from_okon;
+COMPROTO_msg_t msg_from_okon;
 
 static USART_t uart;
 
@@ -111,20 +111,14 @@ void COMHANDLER_Task(timeUs_t t)
 
    switch (msg.msg_type)
    {
-   case MSG_OKON_REQUEST:
+   case MSG_TYPE_REQUEST:
        HandleRequestMsg(&msg);
        break;
-    case MSG_OKON_SERVICE:
+    case MSG_TYPE_SERVICE:
         SERVICE_HandleMsg(&msg);
        break;
-    case MSG_OKON_STICKS:
+    case MSG_TYPE_STICKS:
        HandleSticksMsg(&msg);
-       break;
-    case MSG_OKON_MODE:
-       HandeModeMsg(&msg);
-       break;
-    case MSG_OKON_CL_STATUS:
-       HandleCLStatusMsg(&msg);
        break;
    
    default:
@@ -141,7 +135,7 @@ void COMHANDLER_SendResponse(uint8_t* data, uint8_t len)
 void COMHANDLER_SendConfirmation(uint8_t data)
 {
     msg_from_okon.user_data_len = 1;
-    msg_from_okon.type = MSG_FROM_OKON_SERVICE_CONFIRM;
+    msg_from_okon.type = MSG_TYPE_FROM_OKON_SERVICE_CONFIRM;
     uint8_t buff[1];
     msg_from_okon.user_data = buff;
     msg_from_okon.user_data[0]= data;
@@ -153,10 +147,10 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
 {
     if(CL_GetStatus()==CL_STATUS_ARMED)
     {
-        if(msg->specific==MSG_OKON_REQUEST_PID)
+        if(msg->data[0]==MSG_OKON_REQUEST_PID)
         {
             msg_from_okon.user_data =CL_SerializePIDs(&msg_from_okon.user_data_len);
-            msg_from_okon.type = MSG_FROM_OKON_PID;
+            msg_from_okon.type = MSG_TYPE_FROM_OKON_PID;
             COMPROTO_CreateMsg(&msg_from_okon);
             free(msg_from_okon.user_data); 
 
@@ -165,19 +159,19 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
     }
     else
     {
-        if(msg->specific==MSG_OKON_REQUEST_PID)
+        if(msg->data[0]==MSG_OKON_REQUEST_PID)
         {
             msg_from_okon.user_data = CL_SerializePIDs( &msg_from_okon.user_data_len);
-            msg_from_okon.type = MSG_FROM_OKON_PID;
+            msg_from_okon.type = MSG_TYPE_FROM_OKON_PID;
             COMPROTO_CreateMsg(&msg_from_okon);
             free(msg_from_okon.user_data); 
             
             uart.TransmitDMA(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
         }
-        else if (msg->specific==MSG_OKON_REQUEST_CL_MATRIX)
+        else if (msg->data[0]==MSG_OKON_REQUEST_CL_MATRIX)
         {
             msg_from_okon.user_data = CL_SerializeControlThrustersMatrix(&msg_from_okon.user_data_len);
-            msg_from_okon.type = MSG_FROM_OKON_CL_MATRIX;
+            msg_from_okon.type = MSG_TYPE_FROM_OKON_CL_MATRIX;
             COMPROTO_CreateMsg(&msg_from_okon);
            // free(msg_from_okon.user_data); 
 
@@ -191,29 +185,13 @@ void HandleSticksMsg(COMPROTO_msg_info_t *msg)
     STICK_HandleNewInput((float*)(msg->data), msg->len/(sizeof(float)));
 }
 
-void HandeModeMsg(COMPROTO_msg_info_t *msg)
-{
-    uint8_t mode = msg->data[0];
-    if(mode == CL_MODE_STABLE)
-        CL_SetMode(mode);
-    else if(mode == CL_MODE_ACRO)
-        CL_SetMode(mode);
 
-}
-void HandleCLStatusMsg(COMPROTO_msg_info_t *msg)
-{
-    uint8_t status = msg->data[0];
-    if(status == CL_STATUS_ARMED)
-        CL_SetMode(status);
-    else if(status == CL_STATUS_DISARMED)
-        CL_SetMode(status);
-}
 
 void COMHANDLER_SendHeartBeat()
 {
             msg_from_okon.user_data =0;
             msg_from_okon.user_data_len =0;
-            msg_from_okon.type = MSG_FROM_OKON_HEART_BEAT;
+            msg_from_okon.type = MSG_TYPE_FROM_OKON_HEART_BEAT;
             COMPROTO_CreateMsg(&msg_from_okon);
             uart.TransmitDMA(msg_from_okon.tx_buffer, msg_from_okon.tx_buffer_len);
            
