@@ -57,7 +57,7 @@ uint16_t createFrame()
     memcpy(msg_buffer, analog_sensors, 3*sizeof(float));
     len += 3*sizeof(float);
   //  memcpy(msg_buffer + len, thrusters, sizeof(uint16_t)*THRUSTERS_COUNT);
-    len += sizeof(uint16_t)*THRUSTERS_COUNT;
+    len += sizeof(uint16_t)*ACTUATORS_COUNT;
     memcpy(msg_buffer + len, orientation, sizeof(quaternion_t));
     len += sizeof(quaternion_t);
     constructHeader(len + HEADER_SIZE+CHECKSUM_SIZE);

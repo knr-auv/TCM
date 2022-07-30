@@ -170,7 +170,7 @@ void HandleRequestMsg(COMPROTO_msg_info_t *msg)
         }
         else if (msg->data[0]==MSG_OKON_REQUEST_CL_MATRIX)
         {
-            msg_from_okon.user_data = CL_SerializeControlThrustersMatrix(&msg_from_okon.user_data_len);
+            msg_from_okon.user_data = CL_SerializeControlActuatorsMatrix(&msg_from_okon.user_data_len);
             msg_from_okon.type = MSG_TYPE_FROM_OKON_CL_MATRIX;
             COMPROTO_CreateMsg(&msg_from_okon);
            // free(msg_from_okon.user_data); 

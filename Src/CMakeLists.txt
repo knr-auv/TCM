@@ -45,7 +45,7 @@ main.c
 
 time/time.c
 IO/LED.c
-IO/thrusters.c
+IO/actuators.c
 
 IO/Sticks.c
 

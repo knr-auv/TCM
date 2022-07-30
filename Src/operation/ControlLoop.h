@@ -1,5 +1,5 @@
 #pragma once
-#include "IO/thrusters.h"
+#include "IO/actuators.h"
 #include "time/time.h"
 
 typedef enum 
@@ -27,8 +27,8 @@ cl_status_e CL_GetStatus();
 cl_mode_e CL_GetMode();
 
 void CL_SetMode(cl_mode_e mode);
-float* CL_GetThrustersMatrix();
-void CL_LoadControlThrustersMatrix(uint8_t* buffer, uint16_t len);
-uint8_t* CL_SerializeControlThrustersMatrix(uint16_t* len);
+float* CL_GetActuatorsMatrix();
+void CL_LoadControlActuatorsMatrix(uint8_t* buffer, uint16_t len);
+uint8_t* CL_SerializeControlActuatorsMatrix(uint16_t* len);
 uint8_t* CL_SerializePIDs( uint16_t* len);
 void CL_LoadPIDs(uint8_t* buffer, uint16_t len);

@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include "time/time.h"
 #include "ControlLoop.h"
-#include "IO/thrusters.h"
+#include "IO/actuators.h"
 #include "helpers/common.h"
 #include "scheduler/scheduler.h"
 #define TIMEOUT 1000000
@@ -35,14 +35,14 @@ float*  DTCTRL_GetValues()
 }
 
 
-void DTCTRL_HandleNewDirectMatrixThrustersValues(float* values)
+void DTCTRL_HandleNewDirectMatrixActuatorsValues(float* values)
 {
     lastTimeMatrix = micros();
     for(uint8_t i =0; i<5;i++)
         Control_out[i] = values[i];
 }
 
-void DTCTRL_HandlNewDirectThrustersValues(float* values)
+void DTCTRL_HandlNewDirectActuatorsValues(float* values)
 {
     lastTimeDirect = micros();
     for(uint8_t i =0; i< 8;i++)
@@ -53,11 +53,11 @@ void DTCTRL_Enable()
 {
     lastTimeDirect = micros();
     lastTimeMatrix = micros();
-    THRUSTERS_Enable();
+    ACTUATORS_Enable();
 }
 void DTCTRL_Disable()
 {
-    THRUSTERS_Disable();
+    ACTUATORS_Disable();
 }
 
 void DTCTRL_Task(timeUs_t t)
@@ -70,9 +70,9 @@ void DTCTRL_Task(timeUs_t t)
     if(lastTimeDirect<lastTimeMatrix)
     {
         //perform matrix
-    float* mat = CL_GetThrustersMatrix();
-    COMMON_mat_vec_mul(mat, Control_out, Motors, THRUSTERS_COUNT, 5);
-    COMMON_linear_saturation(Motors,THRUSTERS_COUNT, 1.f);
+    float* mat = CL_GetActuatorsMatrix();
+    COMMON_mat_vec_mul(mat, Control_out, Motors, ACTUATORS_COUNT, 5);
+    COMMON_linear_saturation(Motors,ACTUATORS_COUNT, 1.f);
     }
     else
     {
@@ -80,8 +80,8 @@ void DTCTRL_Task(timeUs_t t)
     }
 
 
-    uint16_t out[THRUSTERS_COUNT];
-    for(uint8_t i =0; i<THRUSTERS_COUNT;i++)
-        out[i] = THRUSTERS_map(Motors[i], -1.f, 1.f);
-    setThrusters(out);
+    uint16_t out[ACTUATORS_COUNT];
+    for(uint8_t i =0; i<ACTUATORS_COUNT;i++)
+        out[i] = ACTUATORS_map(Motors[i], -1.f, 1.f);
+    setActuators(out);
 }

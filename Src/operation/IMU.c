@@ -13,14 +13,14 @@ float* IMU_GetAngVelPointer()
 bool IMU_Init()
 {
     quaternion_t* temp = IMU_GetOrientationQ();
-    VAR_SetSysFloat(&temp->r, VAR_ATTITUDE_Q_r);
-    VAR_SetSysFloat(&temp->i, VAR_ATTITUDE_Q_i);
-    VAR_SetSysFloat(&temp->j, VAR_ATTITUDE_Q_j);
-    VAR_SetSysFloat(&temp->k, VAR_ATTITUDE_Q_k);
+    VAR_SetSysFloat(&temp->r, VAR_SYS_ATTITUDE_Q_r);
+    VAR_SetSysFloat(&temp->i, VAR_SYS_ATTITUDE_Q_i);
+    VAR_SetSysFloat(&temp->j, VAR_SYS_ATTITUDE_Q_j);
+    VAR_SetSysFloat(&temp->k, VAR_SYS_ATTITUDE_Q_k);
     float* t =  IMU_GetAngVelPointer();
-    VAR_SetSysFloat(&t[0], VAR_GYRO_r);
-    VAR_SetSysFloat(&t[1], VAR_GYRO_p);
-    VAR_SetSysFloat(&t[2], VAR_GYRO_y);
+    VAR_SetSysFloat(&t[0], VAR_SYS_GYRO_r);
+    VAR_SetSysFloat(&t[1], VAR_SYS_GYRO_p);
+    VAR_SetSysFloat(&t[2], VAR_SYS_GYRO_y);
     
     return UM7_Init();   
 }

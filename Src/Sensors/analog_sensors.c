@@ -30,9 +30,9 @@ bool ANALOG_IsEnabled()
 }
 void ANALOG_Init()
 {
-    VAR_SetSysFloat(&_cpu_temp, VAR_SENSOR_CPU_TEMP);
-    VAR_SetSysFloat(&_onboard_Humidity, VAR_SENSOR_ONBOARD_HUMMIDITY);
-    VAR_SetSysFloat(&_onboard_Temp, VAR_SENSOR_ONBOARD_TEMP);
+    VAR_SetSysFloat(&_cpu_temp, VAR_SYS_SENSOR_CPU_TEMP);
+    VAR_SetSysFloat(&_onboard_Humidity, VAR_SYS_SENSOR_ONBOARD_HUMMIDITY);
+    VAR_SetSysFloat(&_onboard_Temp, VAR_SYS_SENSOR_ONBOARD_TEMP);
 }
 void ANALOG_Enable()
 {

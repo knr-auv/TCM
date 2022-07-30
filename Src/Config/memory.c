@@ -52,7 +52,7 @@ void MEM_SaveSettings()
     free(dataBuffer);
     address+=len;
 
-    dataBuffer = CL_SerializeControlThrustersMatrix(&len);
+    dataBuffer = CL_SerializeControlActuatorsMatrix(&len);
     MEM_CreateHeader(header, MEM_ID_CL_MATRIX, len);
     SST25_WriteBytes(address ,header, 4);
     address+=4;
@@ -95,6 +95,6 @@ void MEM_LoadSettings()
     if(len > MEM_BUFFER_SIZE)
         return;
     SST25_Read(address, data_buffer, len);
-    CL_LoadControlThrustersMatrix(data_buffer, len);
+    CL_LoadControlActuatorsMatrix(data_buffer, len);
 
 }

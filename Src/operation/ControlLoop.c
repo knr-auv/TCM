@@ -8,7 +8,7 @@
 #include "helpers/quaternions.h"
 #include "helpers/PID.h"
 #include "helpers/common.h"
-#include "IO/thrusters.h"
+#include "IO/actuators.h"
 
 #include "IO/Sticks.h"
 #include "Config/Limits.h"
@@ -39,10 +39,10 @@ Control:
 #define CONTROL_OUTPUTS 5
 
 
-static float control_thrusters_matrix[CONTROL_OUTPUTS*THRUSTERS_COUNT];
+static float control_actuators_matrix[CONTROL_OUTPUTS*ACTUATORS_COUNT];
 static float control_out[CONTROL_OUTPUTS];
-float thrusters_out[THRUSTERS_COUNT];
-uint16_t PWMout[THRUSTERS_COUNT];
+float actuators_out[ACTUATORS_COUNT];
+uint16_t PWMout[ACTUATORS_COUNT];
 
 static cl_status_e status;
 static cl_mode_e mode;
@@ -78,7 +78,7 @@ void (*modeFun[CL_MODE_COUNT])(float dt)=
 
 
 
-void initControlThrustersMatrix()
+void initControlActuatorsMatrix()
 {
     float su[] =
     {
@@ -91,7 +91,7 @@ void initControlThrustersMatrix()
        -1.f,   -1.f,    0.f,    0.f,    0.f,
         0.f,    0.f,    1.f,    0.f,    0.f
     };
-    memcpy(control_thrusters_matrix, su,CONTROL_OUTPUTS*THRUSTERS_COUNT*sizeof(float));
+    memcpy(control_actuators_matrix, su,CONTROL_OUTPUTS*ACTUATORS_COUNT*sizeof(float));
 }
 void CL_Init()
 {
@@ -101,33 +101,33 @@ void CL_Init()
     PID_initialize(&pid_roll, 4, 1.5, 1, 10);
     PID_initialize(&pid_pitch, 4, 1.5, 1.5, 10);
     PID_initialize(&pid_yaw, 4, 0, 0, 10);
-    initControlThrustersMatrix();
-    initThrusters();
+    initControlActuatorsMatrix();
+    initActuators();
 
     pitch_level_gain = 5;
     roll_level_gain = 5;
     yaw_level_gain = 5;
 
-    VAR_SetSysFloat(&Qref.r, VAR_CL_ATTITUDE_REF_Q_r);
-    VAR_SetSysFloat(&Qref.i, VAR_CL_ATTITUDE_REF_Q_i);
-    VAR_SetSysFloat(&Qref.j, VAR_CL_ATTITUDE_REF_Q_j);
-    VAR_SetSysFloat(&Qref.k, VAR_CL_ATTITUDE_REF_Q_k);
+    VAR_SetSysFloat(&Qref.r, VAR_SYS_DESIRED_ATTITUDE_Q_r);
+    VAR_SetSysFloat(&Qref.i, VAR_SYS_DESIRED_ATTITUDE_Q_i);
+    VAR_SetSysFloat(&Qref.j, VAR_SYS_DESIRED_ATTITUDE_Q_j);
+    VAR_SetSysFloat(&Qref.k, VAR_SYS_DESIRED_ATTITUDE_Q_k);
 
-    VAR_SetSysFloat(&QImu->r, VAR_ATTITUDE_Q_r);
-    VAR_SetSysFloat(&QImu->i, VAR_ATTITUDE_Q_i);
-    VAR_SetSysFloat(&QImu->j, VAR_ATTITUDE_Q_j);
-    VAR_SetSysFloat(&QImu->k, VAR_ATTITUDE_Q_k);
+    VAR_SetSysFloat(&QImu->r, VAR_SYS_ATTITUDE_Q_r);
+    VAR_SetSysFloat(&QImu->i, VAR_SYS_ATTITUDE_Q_i);
+    VAR_SetSysFloat(&QImu->j, VAR_SYS_ATTITUDE_Q_j);
+    VAR_SetSysFloat(&QImu->k, VAR_SYS_ATTITUDE_Q_k);
 
-    VAR_SetSysFloat(&ang_vel[0], VAR_GYRO_r);
-    VAR_SetSysFloat(&ang_vel[1], VAR_GYRO_p);
-    VAR_SetSysFloat(&ang_vel[2], VAR_GYRO_y);
-    VAR_SetSysFloat(&ref_ang_velocity[0], VAR_CL_GYRO_REF_r);
-    VAR_SetSysFloat(&ref_ang_velocity[1], VAR_CL_GYRO_REF_p);
-    VAR_SetSysFloat(&ref_ang_velocity[2], VAR_CL_GYRO_REF_y);
+    VAR_SetSysFloat(&ang_vel[0], VAR_SYS_GYRO_r);
+    VAR_SetSysFloat(&ang_vel[1], VAR_SYS_GYRO_p);
+    VAR_SetSysFloat(&ang_vel[2], VAR_SYS_GYRO_y);
+    VAR_SetSysFloat(&ref_ang_velocity[0], VAR_SYS_DESIRED_GYRO_r);
+    VAR_SetSysFloat(&ref_ang_velocity[1], VAR_SYS_DESIRED_GYRO_p);
+    VAR_SetSysFloat(&ref_ang_velocity[2], VAR_SYS_DESIRED_GYRO_y);
 
-    for(uint8_t i =0; i< THRUSTERS_COUNT; i++)
+    for(uint8_t i =0; i< ACTUATORS_COUNT; i++)
     {
-        VAR_SetSysFloat(&thrusters_out[i], VAR_CL_THRUSTER1_OUT + i);
+        VAR_SetSysFloat(&actuators_out[i], VAR_SYS_ACTUATOR_OUT_1 + i);
     }
 }
 
@@ -188,16 +188,16 @@ void CL_TaskFun(timeUs_t t)
 void update_outputs()
 {
 
-    COMMON_mat_vec_mul(control_thrusters_matrix, control_out, thrusters_out, THRUSTERS_COUNT, CONTROL_OUTPUTS);
-    COMMON_linear_saturation(thrusters_out,THRUSTERS_COUNT, MAX_OUTPUT);    
+    COMMON_mat_vec_mul(control_actuators_matrix, control_out, actuators_out, ACTUATORS_COUNT, CONTROL_OUTPUTS);
+    COMMON_linear_saturation(actuators_out,ACTUATORS_COUNT, MAX_OUTPUT);    
 }
 
 void set_motors()
 {
     
-    for(uint8_t i =0; i<THRUSTERS_COUNT;i++)
-        PWMout[i] = THRUSTERS_map(thrusters_out[i], MIN_OUTPUT, MAX_OUTPUT);
-    setThrusters(PWMout);
+    for(uint8_t i =0; i<ACTUATORS_COUNT;i++)
+        PWMout[i] = ACTUATORS_map(actuators_out[i], MIN_OUTPUT, MAX_OUTPUT);
+    setActuators(PWMout);
 }
 
 void CL_Arm()
@@ -205,12 +205,12 @@ void CL_Arm()
     if(status!=CL_STATUS_DISARMED)
         return;
     status = CL_STATUS_ARMED;
-    THRUSTERS_Enable();
+    ACTUATORS_Enable();
 }
 void CL_Disarm()
 {
     status = CL_STATUS_DISARMED;
-    THRUSTERS_Disable();
+    ACTUATORS_Disable();
 }
 void CL_SetMode(cl_mode_e mode)
 {
@@ -225,19 +225,19 @@ cl_mode_e CL_GetMode()
 {
     return mode;
 }
-float* CL_GetThrustersMatrix()
+float* CL_GetActuatorsMatrix()
 {
-    return control_thrusters_matrix;
+    return control_actuators_matrix;
 }
-uint8_t* CL_SerializeControlThrustersMatrix(uint16_t* len)
+uint8_t* CL_SerializeControlActuatorsMatrix(uint16_t* len)
 {
-    *len = CONTROL_OUTPUTS*THRUSTERS_COUNT*sizeof(float);
-    uint8_t *buffer = (uint8_t*)control_thrusters_matrix;
+    *len = CONTROL_OUTPUTS*ACTUATORS_COUNT*sizeof(float);
+    uint8_t *buffer = (uint8_t*)control_actuators_matrix;
     return buffer;
 }
-void CL_LoadControlThrustersMatrix(uint8_t* buffer, uint16_t len)
+void CL_LoadControlActuatorsMatrix(uint8_t* buffer, uint16_t len)
 {
-    memcpy(control_thrusters_matrix, buffer, len);
+    memcpy(control_actuators_matrix, buffer, len);
 }
 uint8_t* CL_SerializePIDs( uint16_t* len)
 {

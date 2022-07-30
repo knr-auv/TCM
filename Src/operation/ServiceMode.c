@@ -42,7 +42,7 @@ void SERVICE_HandleMsg(COMPROTO_msg_info_t *msg)
         }
         else if(msg->data[0] == MSG_SERVICE_UPDATE_CL_MATRIX)
         {
-            CL_LoadControlThrustersMatrix(msg->data, msg->len);
+            CL_LoadControlActuatorsMatrix(msg->data, msg->len);
             COMHANDLER_SendConfirmation(MSG_SERVICE_UPDATE_CL_MATRIX);
         }
         else if (msg->data[0] == MSG_SERVICE_ENABLE_DIRECT_MOTORS_CTRL)
@@ -58,13 +58,13 @@ void SERVICE_HandleMsg(COMPROTO_msg_info_t *msg)
             enableTask(TASK_DIRECT_MOTORS_CTRL, false);
             COMHANDLER_SendConfirmation(MSG_SERVICE_DISABLE_DIRECT_MOTORS_CTRL);
         }
-        else if (msg->data[0] == MSG_SERVICE_DIRECT_THRUSTERS_CTRL)
+        else if (msg->data[0] == MSG_SERVICE_DIRECT_ACTUATORS_CTRL)
         {
-            DTCTRL_HandlNewDirectThrustersValues((float*)msg->data);
+            DTCTRL_HandlNewDirectActuatorsValues((float*)msg->data);
         }
-        else if (msg->data[0] == MSG_SERVICE_DIRECT_MATRIX_THRUSTERS_CTRL)
+        else if (msg->data[0] == MSG_SERVICE_DIRECT_MATRIX_ACTUATORS_CTRL)
         {
-            DTCTRL_HandleNewDirectMatrixThrustersValues((float*)msg->data);
+            DTCTRL_HandleNewDirectMatrixActuatorsValues((float*)msg->data);
         }
         else if(msg->data[0] == MSG_SERVICE_SAVE_SETTINGS)
         {
