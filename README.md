@@ -84,10 +84,35 @@ These messages are used to test, set, load and save new settings.
 
 #### Control message
 
-For now the only option to control the boat is using sticks
-| Type       | value |
+The only option to control the boat is using sticks. Stick values are float big endian. It is possible but not mandatory to send up to 16 stick commands in one message. 
+
+For now sticks are corresponding to the control inputs as follow:
+
+    - stick 0 - roll
+    - stick 1 - pitch
+    - stick 2 - yaw
+    - stick 3 - vertical
+    - stick 4 - forward
+    - stick 5 - enable thrusters
+
+Example message for commanding the sticks:
+
+| Byte name        | value/length |
 |-----------------|------|
-| Sticks   | 0x0   | 
+| Header 0        | 0x69   |   
+| Header 1        | 0x68   |   
+| Payload length (20) MSB |  byte  |  
+| Payload length (20) LSB |   byte |
+|0x2 - ctrl msg     | byte|
+| stick 0 |4 bytes (float)|
+| stick 1 |4 bytes (float)|
+| stick 2 |4 bytes (float)|
+| stick 3 |4 bytes (float)|
+| stick 4 |4 bytes (float)|
+
+|Checksum MSB|byte|
+|Checksum LSB|byte|
+
 
 
 ### Message types from TCM

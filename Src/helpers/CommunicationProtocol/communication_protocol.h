@@ -10,8 +10,8 @@ typedef enum
     MSG_SERVICE_UPDATE_CL_MATRIX,
     MSG_SERVICE_ENABLE_DIRECT_MOTORS_CTRL,
     MSG_SERVICE_DISABLE_DIRECT_MOTORS_CTRL,
-    MSG_SERVICE_DIRECT_THRUSTERS_CTRL,
-    MSG_SERVICE_DIRECT_MATRIX_THRUSTERS_CTRL,
+    MSG_SERVICE_DIRECT_ACTUATORS_CTRL,
+    MSG_SERVICE_DIRECT_MATRIX_ACTUATORS_CTRL,
     MSG_SERVICE_SAVE_SETTINGS,
     MSG_SERVICE_LOAD_SETTINGS,
     MSG_SERVICE_NEW_PIDS
@@ -53,5 +53,5 @@ typedef struct
 }COMPROTO_msg_t;
 
 void COMPROTO_ParseMsg(uint8_t* user_input, uint16_t len, COMPROTO_msg_info_t* msg_struct);
-int COMPROTO_ParseHeader(uint8_t* data);
+int COMPROTO_ParseHeader(uint8_t* data);        //returns data len
 void COMPROTO_CreateMsg(COMPROTO_msg_t* msg);
