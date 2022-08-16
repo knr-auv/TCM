@@ -5,6 +5,7 @@
 #include "IO/LED.h"
 #include "tasks_config.h"
 #include "Sensors/analog_sensors.h"
+#include "Sensors/MS5837-30BA/depth_sensor.h"
 #include "telemetry/telemetry_debug.h"
 #include "operation/ControlLoop.h"
 #include "operation/CommunicationHandler.h"
@@ -51,8 +52,7 @@ task_t tasks[TASK_COUNT] = {
 			.taskName = "CONTROL_LOOP_TASK",
 			.taskFun = CL_TaskFun,
 			.desiredPeriod = TASK_PERIOD_HZ(TASK_PID_HZ),
-			.staticPriority = TASK_PRIORITY_REALTIME
-		},
+			.staticPriority = TASK_PRIORITY_REALTIME},
 
 	[TASK_COMM_HANDLER] =
 		{
@@ -61,13 +61,12 @@ task_t tasks[TASK_COUNT] = {
 			.checkFun = COMHANDLER_CheckFun,
 			.desiredPeriod = TASK_PERIOD_HZ(TASK_COMM_HANDLER_HZ),
 			.staticPriority = TASK_PRIORITY_REALTIME},
-	[TASK_LED_TEST] = 
+	[TASK_LED_TEST] =
 		{
 			.taskName = "TASK_LED_TEST",
 			.taskFun = taskFun1,
 			.desiredPeriod = TASK_PERIOD_HZ(5),
-			.staticPriority = TASK_PRIORITY_HIGH
-		},
+			.staticPriority = TASK_PRIORITY_HIGH},
 	[TASK_AUTOMATIONS] =
 		{
 			.taskName = "TASK_AUTOMATIONS",
@@ -81,13 +80,20 @@ task_t tasks[TASK_COUNT] = {
 			.desiredPeriod = TASK_PERIOD_HZ(TASK_DIRECT_MOTORS_CTRL_HZ),
 			.staticPriority = TASK_PRIORITY_HIGH},
 	[TASK_HEART_BEAT] =
-	{
-		.taskName = "TASK_HEART_BEAT",
-		.taskFun = HB_Task,
-		.desiredPeriod = TASK_PERIOD_HZ(TASK_HEART_BEAT_HZ),
-		.staticPriority = TASK_PRIORITY_HIGH},
-	
-	};
+		{
+			.taskName = "TASK_HEART_BEAT",
+			.taskFun = HB_Task,
+			.desiredPeriod = TASK_PERIOD_HZ(TASK_HEART_BEAT_HZ),
+			.staticPriority = TASK_PRIORITY_HIGH},
+	[TASK_READ_DEPTH_SENSOR] =
+		{
+			.taskName = "READ_DEPTH_SENSOR",
+			.taskFun = read_depth_sensor,
+			.checkFun = NULL, // it will be set in .taskFun
+			.desiredPeriod = TASK_PERIOD_HZ(TASK_READ_DEPTH_SENSOR_HZ),
+			.staticPriority = TASK_PRIORITY_HIGH},
+
+};
 
 void initTasks(void)
 {
@@ -101,4 +107,5 @@ void initTasks(void)
 	enableTask(TASK_AUTOMATIONS, true);
 	enableTask(TASK_DIRECT_MOTORS_CTRL, false);
 	enableTask(TASK_HEART_BEAT, true);
+	enableTask(TASK_READ_DEPTH_SENSOR, true);
 }

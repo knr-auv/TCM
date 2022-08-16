@@ -1,3 +1,4 @@
+#include "stm32f4xx.h"
 #include "setup.h"
 #include "scheduler/scheduler.h"
 #include "tasks/tasks.h"
@@ -7,20 +8,23 @@
 #include "operation/CommunicationHandler.h"
 #include "IO/LED.h"
 #include "Config/memory.h"
+#include "drivers/I2C2.h"
+#include "Sensors/MS5837-30BA/depth_sensor.h"
+
 void init(void)
 {
     initSystem();
     ANALOG_Init();
     IMU_Init();
     CL_Init();
-
+    init_depth_sensor();
     MEM_Init();
     MEM_LoadSettings();
     COMHANDLER_Init();
     initScheduler();
     initTasks();
     ANALOG_beginConversion();
-   // MEM_SaveSettings();
+    //   MEM_SaveSettings();
 }
 
 void enable()
@@ -32,7 +36,8 @@ int main(void)
 {
     init();
     enable();
-    while(1)
+
+    while (1)
     {
         scheduler();
     }

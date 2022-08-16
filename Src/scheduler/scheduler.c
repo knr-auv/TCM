@@ -8,7 +8,7 @@
 #include "operation/CommunicationHandler.h"
 #endif
 
-task_t *taskQueue[TASK_COUNT + 1];	//extra item for null pointer at the end
+task_t *taskQueue[TASK_COUNT + 1]; // extra item for null pointer at the end
 task_t *currentTask = NULL;
 static uint8_t taskQueueSize = 0;
 static uint8_t taskQueuePos = 0;
@@ -44,7 +44,7 @@ static bool isInQueue(task_t *task)
 
 static bool addToQueue(task_t *task)
 {
-	if (isInQueue(task) || taskQueueSize >= TASK_COUNT) //make sure that we have place
+	if (isInQueue(task) || taskQueueSize >= TASK_COUNT) // make sure that we have place
 		return false;
 	for (uint8_t i = 0; i <= taskQueueSize; i++)
 	{
@@ -106,24 +106,29 @@ void scheduler(void)
 	bool realTimeTaskLock = false;
 	for (task_t *task = queueFirst(); task != NULL; task = queueNext())
 	{
-		if (task->checkFun)
+		if (task->checkFun) // if checkFun exist
 		{
-			 const timeUs_t currentTimeBeforeCheckFuncCallUs = micros();
-			if (task->dynamicPriority > 0) {
-                task->ageCycles = 1 + ((timeDelta_t)(currentTime - task->lastSignaled)) / task->desiredPeriod;
-                task->dynamicPriority = 1 + task->staticPriority * task->ageCycles;
-                waitingTasks++;
-            } else if (task->checkFun(currentTimeBeforeCheckFuncCallUs, currentTimeBeforeCheckFuncCallUs - task->lastExecution)) {
+			const timeUs_t currentTimeBeforeCheckFuncCallUs = micros();
+			if (task->dynamicPriority > 0)
+			{
+				task->ageCycles = 1 + ((timeDelta_t)(currentTime - task->lastSignaled)) / task->desiredPeriod;
+				task->dynamicPriority = 1 + task->staticPriority * task->ageCycles;
+				waitingTasks++;
+			}
+			else if (task->checkFun(currentTimeBeforeCheckFuncCallUs, currentTimeBeforeCheckFuncCallUs - task->lastExecution))
+			{
 
-                task->lastSignaled = currentTimeBeforeCheckFuncCallUs;
-                task->ageCycles = 1;
-                task->dynamicPriority = 1 + task->staticPriority;
-                waitingTasks++;
-            } else {
-                task->ageCycles = 0;
-            }
+				task->lastSignaled = currentTimeBeforeCheckFuncCallUs;
+				task->ageCycles = 1;
+				task->dynamicPriority = 1 + task->staticPriority;
+				waitingTasks++;
+			}
+			else
+			{
+				task->ageCycles = 0;
+			}
 		}
-		else if (task->staticPriority == TASK_PRIORITY_REALTIME) //handling high priority task
+		else if (task->staticPriority == TASK_PRIORITY_REALTIME) // handling high priority task
 		{
 			if ((currentTime - task->lastExecution) > task->desiredPeriod)
 			{
@@ -133,7 +138,7 @@ void scheduler(void)
 				realTimeTaskLock = true;
 			}
 		}
-		else //low priority tasks
+		else // low priority tasks
 		{
 			task->ageCycles = (currentTime - task->lastExecution) / task->desiredPeriod;
 			if (task->ageCycles > 0)
@@ -143,19 +148,17 @@ void scheduler(void)
 			}
 		}
 
-		if (!realTimeTaskLock && (task->dynamicPriority > selectedTaskDynamicPriority))	//if there is no real time
+		if (!realTimeTaskLock && (task->dynamicPriority > selectedTaskDynamicPriority)) // if there is no real time
 		{
 			selectedTaskDynamicPriority = task->dynamicPriority;
 			selectedTask = task;
 			waitingTasks++;
 		}
-
 	}
 
-	
-		totalWaitingTasks += waitingTasks;
-		totalWaitingTasksSamples++;
-		currentTask = selectedTask;
+	totalWaitingTasks += waitingTasks;
+	totalWaitingTasksSamples++;
+	currentTask = selectedTask;
 	if (selectedTask)
 	{
 		const timeUs_t timeBeforeTask = micros();

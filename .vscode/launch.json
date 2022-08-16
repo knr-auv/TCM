@@ -1,15 +1,15 @@
 {
     "version": "0.2.0",
     "configurations": [
-      {
+      { 
+        "name": "Debug (OpenOCD)",
         "type": "cortex-debug",
         "request": "launch",
-        "name": "Debug (OpenOCD)",
         "servertype": "openocd",
         "cwd": "${workspaceFolder}",
-        "runToMain": true,
-        "showDevDebugOutput": true,
-        
+        "runToEntryPoint":"main",
+        "showDevDebugOutput": "both",
+        "preLaunchTask": "clean & build",
         "executable": "${workspaceFolder}/bin/main.elf",
         "configFiles": [
           "${workspaceFolder}/openocd.cfg"

@@ -1,4 +1,4 @@
-{
+{   
     "cmake.generator": "MinGW Makefiles",
     "files.associations": {
         "analog_sensors.h": "c",
