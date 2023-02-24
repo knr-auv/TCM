@@ -29,7 +29,11 @@
         "limits": "c",
         "memory": "c",
         "new": "c",
-        "functional": "c"
+        "functional": "c",
+        "config.h": "c",
+        "stdbool.h": "c",
+        "communication_protocol.h": "c",
+        "variables.h": "c"
     },
     //"cortex-debug.stm32cubeprogrammer": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
 }

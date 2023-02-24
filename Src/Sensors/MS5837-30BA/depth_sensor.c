@@ -11,7 +11,6 @@
 
 // variable for RX and TX purpose (you can use any other):
 static uint8_t receiving_table[20];
-static uint8_t transmitting_table[10];
 float depth_sens_temperature = 0;
 float depth_sens_pressure = 0;
 

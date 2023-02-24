@@ -16,6 +16,7 @@ typedef enum
     VAR_SYS_ATTITUDE_Q_i,
     VAR_SYS_ATTITUDE_Q_j,
     VAR_SYS_ATTITUDE_Q_k,
+    
     VAR_SYS_ATTITUDE_E_r,
     VAR_SYS_ATTITUDE_E_p,
     VAR_SYS_ATTITUDE_E_y,
@@ -65,6 +66,7 @@ typedef enum
     
     VAR_SYS_COUNT
 }VAR_sys_float_e;
+
 
 void VAR_SetSysFloat(float *value, VAR_sys_float_e name);
 float *VAR_GetSysFloatPtr(VAR_sys_float_e name);

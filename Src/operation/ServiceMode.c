@@ -2,7 +2,7 @@
 #include "scheduler/scheduler.h"
 #include "ControlLoop.h"
 #include "helpers/CommunicationProtocol/communication_protocol.h"
-#include "CommunicationHandler.h"
+#include "communication/CommunicationHandler.h"
 #include "DirectThrustersCtrl.h"
 #include "Config/memory.h"
 #include "IO/LED.h"

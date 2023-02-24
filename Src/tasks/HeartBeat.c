@@ -1,7 +1,7 @@
 #include "time/time.h"
 #include "config.h"
 #include "IO/LED.h"
-#include "operation/CommunicationHandler.h"
+#include "communication/CommunicationHandler.h"
 #ifdef HEART_BEAT_PACKET
 bool enable_packet = true;
 void HB_DisablePacket()

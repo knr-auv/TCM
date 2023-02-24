@@ -6,5 +6,4 @@ void EXTI9_5_IRQHandler(void){
         BNO080_interruptHandler();
         EXTI->PR =(EXTI_PR_PR9);    //clear pending bit
     }
-
 }

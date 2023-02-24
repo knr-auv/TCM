@@ -14,6 +14,7 @@ static uint16_t receivedBytes = 0;
 static uint16_t rx_buffer_size = 0;
 
 void USART3_RX_Complete_Callback();
+void USART3_TX_Complete_Callback();
 void USART3_NewDataFlagReset()
 {
     new_data=false;
@@ -81,5 +82,6 @@ void DMA1_Stream3_IRQHandler(void)
     if(DMA1->LISR & DMA_LISR_TCIF3){ //if interupt is TC
         txCompleted = true;
         DMA1->LIFCR = DMA_LIFCR_CTCIF3;     //clear tc flag
+        USART3_TX_Complete_Callback();
     }
 }

@@ -33,20 +33,24 @@ set(MAIN_SRC
 
     tasks/tasks.c
     tasks/HeartBeat.c
+    tasks/task_Telemetry.c
+    tasks/task_ReadAnalogSensors.c
 
     Config/Limits.c
     Config/memory.c
 
     operation/ControlLoop.c
     operation/IMU.c
-    operation/CommunicationHandler.c
     operation/DirectThrustersCtrl.c
     operation/Automations.c
     operation/ServiceMode.c
 
     Variables/variables.c
 
-    telemetry/telemetry_debug.c
+    communication/CommunicationHandler.c
+    communication/tx_handler.c
+    communication/rx_handler.c
+
 
     interrupts.c
     time/time.c
@@ -55,5 +59,13 @@ set(MAIN_SRC
     IO/actuators.c
 
     IO/Sticks.c
-    PARENT_SCOPE
 )
+
+macro(main_sources var) 
+    set(${var} ${ARGN})
+    list(TRANSFORM ${var} PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
+endmacro()
+
+main_sources(MAIN_SRC ${MAIN_SRC})
+set(MAIN_SOURCES ${MAIN_SRC} PARENT_SCOPE)
+

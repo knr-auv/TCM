@@ -2,19 +2,25 @@
     "version": "0.2.0",
     "configurations": [
       { 
-        "name": "Debug (OpenOCD)",
         "type": "cortex-debug",
         "request": "launch",
+        "name": "Debug (OpenOCD)",
         "servertype": "openocd",
         "cwd": "${workspaceFolder}",
         "runToEntryPoint":"main",
         "showDevDebugOutput": "both",
-        "preLaunchTask": "clean & build",
         "executable": "${workspaceFolder}/bin/main.elf",
+        "device": "STM32G431KB",
         "configFiles": [
           "${workspaceFolder}/openocd.cfg"
         ],
-        "svdFile":"STM32F4.svd"
+        "svdFile":"STM32F4.svd",
+        "swoConfig": 
+        {
+          "enabled": true,
+          "cpuFrequency": 170000000,
+          "swoFrequency": 1800000
+        }
       }
     ]
   }

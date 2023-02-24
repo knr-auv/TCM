@@ -12,6 +12,7 @@ typedef struct
     bool (*CheckTxEnd)();
     uint16_t (*GetReceivedBytes)();
     void (*RXCompleteCallback)();
+    void (*TXCompleteCallback)();
 }USART_t;
 
 typedef enum

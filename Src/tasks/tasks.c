@@ -3,16 +3,16 @@
 #include "scheduler/scheduler.h"
 #include "config.h"
 #include "IO/LED.h"
-#include "tasks_config.h"
-#include "Sensors/analog_sensors.h"
+#include "config_tasks.h"
+
 #include "Sensors/MS5837-30BA/depth_sensor.h"
-#include "telemetry/telemetry_debug.h"
 #include "operation/ControlLoop.h"
-#include "operation/CommunicationHandler.h"
+#include "communication/CommunicationHandler.h"
 #include "operation/Automations.h"
 #include "operation/DirectThrustersCtrl.h"
 #include "HeartBeat.h"
 #include "Variables/variables.h"
+#include "tasks.h"
 
 void taskFun1(timeUs_t t)
 {
@@ -22,11 +22,7 @@ void taskFun2(timeUs_t t)
 {
 	LED_Red_Toggle();
 }
-void TASK_read_analog_sensors(timeUs_t t)
-{
-	ANALOG_beginConversion();
-	ANALOG_ProcesRAW();
-}
+
 
 task_t tasks[TASK_COUNT] = {
 	[TASK_SYSTEM] =
@@ -41,12 +37,12 @@ task_t tasks[TASK_COUNT] = {
 			.taskFun = TASK_read_analog_sensors,
 			.desiredPeriod = TASK_PERIOD_HZ(TASK_READ_ANALOG_SENSORS_HZ),
 			.staticPriority = TASK_PRIORITY_LOW},
-	[TASK_TELEMETRY_DEBUG] =
+	[TASK_TELEMETRY] =
 		{
-			.taskName = "TELEMETRY_DEBUG",
-			.taskFun = TELEMETRY_DEBUG_task,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_TELEMETRY_DEBUG_HZ),
-			.staticPriority = TASK_PRIORITY_LOW},
+			.taskName = "TELEMETRY",
+			.taskFun = TASK_Telemetry,
+			.desiredPeriod = TASK_PERIOD_HZ(TASK_TELEMETRY_HZ),
+			.staticPriority = TASK_TELEMETRY_PRIORITY},
 	[TASK_CONTROL_LOOP] =
 		{
 			.taskName = "CONTROL_LOOP_TASK",
@@ -100,12 +96,12 @@ void initTasks(void)
 	initScheduler();
 
 	enableTask(TASK_READ_ANALOG_SENSORS, true);
-	enableTask(TASK_TELEMETRY_DEBUG, true);
+	enableTask(TASK_TELEMETRY, true);
 	enableTask(TASK_CONTROL_LOOP, true);
 	enableTask(TASK_COMM_HANDLER, true);
 	enableTask(TASK_LED_TEST, false);
 	enableTask(TASK_AUTOMATIONS, true);
 	enableTask(TASK_DIRECT_MOTORS_CTRL, false);
 	enableTask(TASK_HEART_BEAT, true);
-	enableTask(TASK_READ_DEPTH_SENSOR, true);
+	//enableTask(TASK_READ_DEPTH_SENSOR, true);
 }

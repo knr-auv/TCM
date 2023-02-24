@@ -2,7 +2,7 @@
 #include "IO/Sticks.h"
 #include "config.h"
 #include "operation/ControlLoop.h"
-#include "operation/CommunicationHandler.h"
+#include "communication/CommunicationHandler.h"
 
 void HandleStickTimeout();
 void HandleCommHandlerTimeout();

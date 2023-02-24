@@ -32,7 +32,6 @@ USART_t USARTs[3] =
         .ReceiveDMA = USART3_Receive_DMA,
         .StopReceiving = USART3_StopReceiving,
         .TransmitDMA = USART3_Transmit_DMA,
-
     }
 };
 
@@ -41,6 +40,13 @@ void USART1_RX_Complete_Callback()
     if(USARTs[UART1].RXCompleteCallback)
     {
        USARTs[UART1].RXCompleteCallback(); 
+    }
+}
+void USART1_TX_Complete_Callback()
+{
+    if(USARTs[UART1].TXCompleteCallback)
+    {
+       USARTs[UART1].TXCompleteCallback(); 
     }
 }
 void USART2_RX_Complete_Callback()
@@ -56,6 +62,14 @@ void USART3_RX_Complete_Callback()
     if(USARTs[UART3].RXCompleteCallback)
     {
        USARTs[UART3].RXCompleteCallback(); 
+    }
+}
+
+void USART3_TX_Complete_Callback()
+{
+    if(USARTs[UART3].TXCompleteCallback)
+    {
+       USARTs[UART3].TXCompleteCallback(); 
     }
 }
 

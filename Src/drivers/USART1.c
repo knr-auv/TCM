@@ -16,7 +16,7 @@ static bool new_data = false;
 static uint16_t rx_buffer_size = 0;
 
 void USART1_RX_Complete_Callback();
-
+void USART1_TX_Complete_Callback();
 void USART1_NewDataFlagReset()
 {
     new_data=false;
@@ -88,5 +88,6 @@ void DMA2_Stream7_IRQHandler(void)
     if(DMA2->HISR & DMA_HISR_TCIF7){ //if interupt is TC
         txCompleted = true;
         DMA2->HIFCR = DMA_HIFCR_CTCIF7;     //clear tc flag
+        USART1_TX_Complete_Callback();
     }
 }
