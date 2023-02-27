@@ -4,7 +4,7 @@
 #include "helpers/CommunicationProtocol/communication_protocol.h"
 #include "communication/CommunicationHandler.h"
 #include "DirectThrustersCtrl.h"
-#include "Config/memory.h"
+#include "Memory/memory.h"
 #include "IO/LED.h"
 #include "tasks/HeartBeat.h"
 bool ServiceModeActive = false;

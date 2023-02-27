@@ -37,7 +37,7 @@ set(MAIN_SRC
     tasks/task_ReadAnalogSensors.c
 
     Config/Limits.c
-    Config/memory.c
+    Memory/memory.c
 
     operation/ControlLoop.c
     operation/IMU.c

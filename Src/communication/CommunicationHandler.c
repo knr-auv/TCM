@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
-#include "config.h"
+#include "Config/config.h"
 #include "time/time.h"
 #include "helpers/CommunicationProtocol/communication_protocol.h"
 

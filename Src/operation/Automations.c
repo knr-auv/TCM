@@ -1,6 +1,6 @@
 #include "time/time.h"
 #include "IO/Sticks.h"
-#include "config.h"
+#include "Config/config.h"
 #include "operation/ControlLoop.h"
 #include "communication/CommunicationHandler.h"
 

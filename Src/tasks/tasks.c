@@ -1,9 +1,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "scheduler/scheduler.h"
-#include "config.h"
+#include "Config/config.h"
 #include "IO/LED.h"
-#include "config_tasks.h"
+#include "Config/config_tasks.h"
 
 #include "Sensors/MS5837-30BA/depth_sensor.h"
 #include "operation/ControlLoop.h"

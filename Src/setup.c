@@ -1,6 +1,6 @@
 #include "stm32f4xx.h"
 #include "setup.h"
-#include "config.h"
+#include "Config/config.h"
 #include "time/time.h"
 
 static void initCLOCK(void);

@@ -3,7 +3,7 @@
 #include <string.h>
 #include "UM7.h"
 #include "UM7_registers.h"
-#include "config.h"
+#include "Config/config.h"
 #include "drivers/USART.h"
 #include "time/time.h"
 

@@ -7,7 +7,7 @@
 #include "operation/ControlLoop.h"
 #include "communication/CommunicationHandler.h"
 #include "IO/LED.h"
-#include "Config/memory.h"
+#include "Memory/memory.h"
 #include "drivers/I2C2.h"
 #include "Sensors/MS5837-30BA/depth_sensor.h"
 #include "drivers/SST25_flash/SST25_flash.h"
@@ -35,12 +35,6 @@ void enable()
 
 int main(void)
 {
-    initSystem();
-    SST25_Init();
-    if(!SST25_SelfTest())
-    {
-        ;
-    }
     init();
     enable();
 

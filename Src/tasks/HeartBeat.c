@@ -1,5 +1,5 @@
 #include "time/time.h"
-#include "config.h"
+#include "Config/config.h"
 #include "IO/LED.h"
 #include "communication/CommunicationHandler.h"
 #ifdef HEART_BEAT_PACKET

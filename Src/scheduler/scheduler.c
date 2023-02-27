@@ -3,7 +3,7 @@
 #include "IO/LED.h"
 #include "scheduler.h"
 #include "time/time.h"
-#include "config.h"
+#include "Config/config.h"
 #ifdef SYSTEM_HEART_BEAT_ENABLE
 #include "operation/CommunicationHandler.h"
 #endif

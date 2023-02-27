@@ -1,6 +1,6 @@
 #include <string.h>
 #include <stdbool.h>
-#include "config.h"
+#include "Config/config.h"
 #include "drivers/USART.h"
 
 #define HEADER_SIZE 3

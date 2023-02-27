@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "time/time.h"
-#include "config.h"
+#include "Config/config.h"
 #include "stm32f4xx.h"
 
 

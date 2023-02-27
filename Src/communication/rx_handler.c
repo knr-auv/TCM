@@ -1,6 +1,6 @@
 #include <string.h>
 #include <stdbool.h>
-#include "config.h"
+#include "Config/config.h"
 #include "drivers/USART.h"
 #include "helpers/CommunicationProtocol/communication_protocol.h"
 static enum

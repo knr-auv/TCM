@@ -33,7 +33,10 @@
         "config.h": "c",
         "stdbool.h": "c",
         "communication_protocol.h": "c",
-        "variables.h": "c"
+        "variables.h": "c",
+        "sst25_flash.h": "c",
+        "heartbeat.h": "c",
+        "sst25_platform.h": "c"
     },
     //"cortex-debug.stm32cubeprogrammer": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
 }

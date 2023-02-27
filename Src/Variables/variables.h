@@ -25,6 +25,8 @@ typedef enum
     VAR_SYS_GYRO_p,
     VAR_SYS_GYRO_y,
 
+    VAR_SYS_BATTERY_LEVEL,
+
     VAR_SYS_SENSOR_ONBOARD_TEMP,
     VAR_SYS_SENSOR_CPU_TEMP,
     VAR_SYS_SENSOR_ONBOARD_HUMMIDITY,
@@ -67,6 +69,10 @@ typedef enum
     VAR_SYS_COUNT
 }VAR_sys_float_e;
 
+typedef enum
+{
+
+}VAR_sys_uint8_t;
 
 void VAR_SetSysFloat(float *value, VAR_sys_float_e name);
 float *VAR_GetSysFloatPtr(VAR_sys_float_e name);
