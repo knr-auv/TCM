@@ -69,10 +69,6 @@ typedef enum
     VAR_SYS_COUNT
 }VAR_sys_float_e;
 
-typedef enum
-{
-
-}VAR_sys_uint8_t;
 
 void VAR_SetSysFloat(float *value, VAR_sys_float_e name);
 float *VAR_GetSysFloatPtr(VAR_sys_float_e name);

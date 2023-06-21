@@ -1,42 +1,12 @@
-{   
-    "cmake.generator": "MinGW Makefiles",
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.configureOnOpen": true,
     "files.associations": {
-        "analog_sensors.h": "c",
-        "usart2.h": "c",
-        "quaternions.h": "c",
-        "usart3.h": "c",
-        "pid.h": "c",
-        "imu.h": "c",
-        "tasks_config.h": "c",
-        "thrusters.h": "c",
-        "time.h": "c",
-        "controlloop.h": "c",
-        "usart1.h": "c",
-        "comunication_protocol.h": "c",
-        "limits.h": "c",
-        "gpio.h": "c",
-        "communicationhandler.h": "c",
-        "automations.h": "c",
-        "telemetry_debug.h": "c",
-        "communication_protocol_service.h": "c",
-        "memory.h": "c",
-        "scheduler.h": "c",
-        "usart.h": "c",
-        "bit": "c",
-        "compare": "c",
-        "cstddef": "c",
-        "string": "c",
-        "limits": "c",
-        "memory": "c",
-        "new": "c",
-        "functional": "c",
-        "config.h": "c",
-        "stdbool.h": "c",
-        "communication_protocol.h": "c",
-        "variables.h": "c",
-        "sst25_flash.h": "c",
-        "heartbeat.h": "c",
-        "sst25_platform.h": "c"
+      "arm_math.h": "c",
+      "math.h": "c",
+      "ieeefp.h": "c",
+      "reent.h": "c"
     },
-    //"cortex-debug.stm32cubeprogrammer": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
-}
+    "ipynb.pasteImagesAsAttachments.enabled": true
+  }
+  

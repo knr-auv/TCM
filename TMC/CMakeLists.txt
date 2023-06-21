@@ -66,6 +66,5 @@ macro(main_sources var)
     list(TRANSFORM ${var} PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 endmacro()
 
-main_sources(MAIN_SRC ${MAIN_SRC})
-set(MAIN_SOURCES ${MAIN_SRC} PARENT_SCOPE)
-
+main_sources(src ${MAIN_SRC})
+set(MAIN_SOURCES ${src} PARENT_SCOPE)

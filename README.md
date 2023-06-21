@@ -139,3 +139,10 @@ After each service message received TCM is responding with this packet.
 
 #### Telemetry
 
+
+# Compiling
+- Download STM32CubeIDE
+- Clone TMC code from github
+- Open TMC folder with VSCode
+- Install Embeded Tools extension
+- Hit F5 to debug

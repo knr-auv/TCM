@@ -1,8 +1,9 @@
-
-
-#include "arm_math.h"
-#include "quaternions.h"
+#define __BSD_VISIBLE
+#include <stdint.h>
 #include <math.h>
+
+#include "quaternions.h"
+
 void Q_normalize(quaternion_t *Q)
 {
     float norm = Q_norm(Q);
@@ -16,12 +17,12 @@ void Q_fromEuler(float roll, float pitch, float yaw, quaternion_t *res)
     roll *= M_PI / 180.f;
     pitch *= M_PI / 180.f;
     yaw *= M_PI / 180.f;
-    float cy = arm_cos_f32(yaw * 0.5);
-    float sy = arm_sin_f32(yaw * 0.5);
-    float cp = arm_cos_f32(pitch * 0.5);
-    float sp = arm_sin_f32(pitch * 0.5);
-    float cr = arm_cos_f32(roll * 0.5);
-    float sr = arm_sin_f32(roll * 0.5);
+    float cy = cosf(yaw * 0.5);
+    float sy = sinf(yaw * 0.5);
+    float cp = cosf(pitch * 0.5);
+    float sp = sinf(pitch * 0.5);
+    float cr = cosf(roll * 0.5);
+    float sr = sinf(roll * 0.5);
 
     res->r = cr * cp * cy + sr * sp * sy;
     res->i = sr * cp * cy - cr * sp * sy;
@@ -38,7 +39,7 @@ void Q_multiply(quaternion_t *Q1, quaternion_t *Q2, quaternion_t *res)
 float Q_norm(quaternion_t *Q)
 {
     float sum = Q->i * Q->i + Q->j * Q->j + Q->k * Q->k + Q->r * Q->r;
-    arm_sqrt_f32(sum, &sum);
+    sum = sqrtf(sum);
     return sum;
 }
 void Q_conj(quaternion_t *Q)

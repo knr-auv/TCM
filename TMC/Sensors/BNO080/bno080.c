@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include "arm_math.h"
+#include <math.h>
+
 #include "hw.h"
 #include "sh2.h"
 #include "bno080.h"

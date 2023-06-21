@@ -7,7 +7,6 @@
 #include "stm32f4xx.h"
 
 
-
 static bool txCompleted = true;
 
 static uint16_t receivedBytes = 0;
