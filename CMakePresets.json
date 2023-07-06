@@ -1,53 +1,53 @@
 {
   "version": 2,
   "configurePresets": [
-    {
-      "name": "default",
-      "hidden": true,
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}/build",
-      "cacheVariables": {
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}/install",
-        "CMAKE_TOOLCHAIN_FILE": {
-          "type": "FILEPATH",
-          "value": "${sourceDir}/cmake/gcc-arm-none-eabi.cmake"
-        }
+      {
+          "name": "arm-gcc-cortex-m4",
+          "hidden": true,
+          "generator": "Ninja",
+          "binaryDir": "${sourceDir}/build",
+          "cacheVariables": {
+              "CMAKE_INSTALL_PREFIX": "${sourceDir}/install",
+              "CMAKE_TOOLCHAIN_FILE": {
+                  "type": "FILEPATH",
+                  "value": "${sourceDir}/cmake/arm-gcc-m4-toolchain.cmake"
+              }
+          },
+          "architecture": {
+              "value": "unspecified",
+              "strategy": "external"
+          },
+          "vendor": {
+              "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                  "intelliSenseMode": "linux-gcc-arm"
+              }
+          }
       },
-      "architecture": {
-        "value": "unspecified",
-        "strategy": "external"
+      {
+          "name": "debug",
+          "inherits": "arm-gcc-cortex-m4",
+          "cacheVariables": {
+              "CMAKE_BUILD_TYPE": "Debug",
+              "PRESET_NAME": "debug"
+          }
       },
-      "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake/1.0": {
-          "intelliSenseMode": "linux-gcc-arm"
-        }
+      {
+          "name": "release",
+          "inherits": "arm-gcc-cortex-m4",
+          "cacheVariables": {
+              "CMAKE_BUILD_TYPE": "Release",
+              "PRESET_NAME": "release"
+          }
       }
-    },
-    {
-      "name": "debug",
-      "inherits": "default",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "PRESET_NAME": "debug"
-      }
-    },
-    {
-      "name": "release",
-      "inherits": "default",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "PRESET_NAME": "release"
-      }
-    }
   ],
   "buildPresets": [
-    {
-      "name": "debug",
-      "configurePreset": "debug"
-    },
-    {
-      "name": "release",
-      "configurePreset": "release"
-    }
+      {
+          "name": "debug",
+          "configurePreset": "debug"
+      },
+      {
+          "name": "release",
+          "configurePreset": "release"
+      }
   ]
 }

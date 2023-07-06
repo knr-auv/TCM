@@ -5,7 +5,8 @@
       "arm_math.h": "c",
       "math.h": "c",
       "ieeefp.h": "c",
-      "reent.h": "c"
+      "reent.h": "c",
+      "errno.h": "c"
     },
     "ipynb.pasteImagesAsAttachments.enabled": true
   }

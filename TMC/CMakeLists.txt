@@ -1,4 +1,4 @@
-set(MAIN_SRC
+set(SOURCES
 
     main.c
 
@@ -59,12 +59,44 @@ set(MAIN_SRC
     IO/actuators.c
 
     IO/Sticks.c
+    startup/startup_stm32f407xx.s
+    startup/system_stm32f4xx.c
+    startup/syscalls.c
+    startup/sysmem.c
 )
 
-macro(main_sources var) 
-    set(${var} ${ARGN})
-    list(TRANSFORM ${var} PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
-endmacro()
+add_executable(${PROJECT_NAME} ${SOURCES})
 
-main_sources(src ${MAIN_SRC})
-set(MAIN_SOURCES ${src} PARENT_SCOPE)
+set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/startup/STM32F407VGTx_FLASH.ld)
+
+target_link_options(${PROJECT_NAME} PRIVATE -T${LINKER_SCRIPT})
+target_link_options(${PROJECT_NAME} PRIVATE -Wl,-Map=${PROJECT_NAME}.map)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf") 
+
+# add_custom_command(
+#     TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${PROJECT_NAME}>
+# )
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O ihex
+    $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.hex
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O binary
+    $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.bin
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_OBJDUMP} -d
+    $<TARGET_FILE:${PROJECT_NAME}> ${PROJECT_NAME}.elf > ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.txt
+)
+target_link_directories("${PROJECT_NAME}" PUBLIC ${CMAKE_SOURCE_DIR})
+target_compile_definitions("${PROJECT_NAME}" PUBLIC BOOTLOADER_VERSION_MAJOR=${VERSION_MAJOR} BOOTLOADER_VERSION_MINOR=${VERSION_MINOR})
+target_include_directories("${PROJECT_NAME}" PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories("${PROJECT_NAME}" PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
