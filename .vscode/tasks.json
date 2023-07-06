@@ -25,6 +25,22 @@
               },  
             "problemMatcher": [],
             "dependsOn": [ "Build" ]
+        },
+        {
+          "label": "Reset",
+          "type": "shell",
+          "command": "openocd -f openocd.cfg -c \"init\" -c \"reset\" -c \"shutdown\"",
+          "windows": {
+              "options": {
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": ["/c"]
+                }
+              }
+            },  
+          "problemMatcher": [],
+          "dependsOn": [ "Build" ]
+
         }
     ]
   }
