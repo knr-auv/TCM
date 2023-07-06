@@ -10,7 +10,22 @@
           "kind": "build",
           "isDefault": true
         }
-      }
+      },
+       {
+            "label": "Flash",
+            "type": "shell",
+            "command": "openocd -f openocd.cfg -c \"program build/TMC/TMC.elf verify\" -c \"reset\" -c shutdown",
+            "windows": {
+                "options": {
+                  "shell": {
+                      "executable": "cmd.exe",
+                      "args": ["/c"]
+                  }
+                }
+              },  
+            "problemMatcher": [],
+            "dependsOn": [ "Build" ]
+        }
     ]
   }
   

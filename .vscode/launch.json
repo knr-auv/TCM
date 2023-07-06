@@ -2,13 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch",
+      "name": "LaunchSTMCubeProgrammer",
       "type": "cppdbg",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "program": "${command:cmake.launchTargetPath}",
       "MIMode": "gdb",
-      "miDebuggerPath": "${command:vscode-embedded.st.gdb}",
+      "miDebuggerPath": "arm-none-eabi-gdb",
       "miDebuggerServerAddress": "localhost:3333",
       "debugServerPath": "${command:vscode-embedded.st.gdbserver}",
       "debugServerArgs": "--stm32cubeprogrammer-path ${command:vscode-embedded.st.cubeprogrammer} --swd --port-number 3333",
@@ -16,14 +16,36 @@
       "stopAtConnect": true,
       "postRemoteConnectCommands": [
         {
-          "text": "load build/debug/build/TMC.elf"
+          "text": "load build/TMC/TMC.elf"
         }
       ],
       "logging": {
         "engineLogging": true
       },
-      "preLaunchTask": "Build",
+      "preLaunchTask": "Flash",
       "svdPath": "${command:vscode-embedded.st.svd}/STM32F407.svd"
-    }
+    },
+    {
+      "name": "LaunchOpenOCD",
+      "type": "cppdbg",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/build/TMC/TMC.elf",
+      "MIMode": "gdb",
+      "miDebuggerPath": "arm-none-eabi-gdb",
+      "miDebuggerServerAddress": "localhost:3333",
+      "debugServerPath": "openocd",
+      "debugServerArgs": "-f ${workspaceFolder}/openocd.cfg",
+      "serverStarted": "Listening on port .* for gdb connections",
+      "filterStderr": true,
+      "stopAtConnect": true,
+      "stopAtEntry": true,
+      "hardwareBreakpoints": {
+          "require": true,
+          "limit": 2
+      },
+      "preLaunchTask": "Flash",
+      "svdPath": "${workspaceFolder}/STM32F4.svd"
+  }
   ]
 }
