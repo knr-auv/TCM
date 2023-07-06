@@ -141,8 +141,14 @@ After each service message received TCM is responding with this packet.
 
 
 # Compiling
-- Download STM32CubeIDE
+- Copy following lines to install vcpkg:
+  - linux: '. <(curl https://aka.ms/vcpkg-init.sh -L)'
+  - windows: 'iex (iwr -useb https://aka.ms/vcpkg-init.ps1)'
+
 - Clone TMC code from github
 - Open TMC folder with VSCode
 - Install Embeded Tools extension
-- Hit F5 to debug
+- Install CMake Tools extension
+- in terminal type vcpkg activate
+
+Thats it. 
