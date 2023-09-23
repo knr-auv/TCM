@@ -7,25 +7,27 @@
 #include "operation/ControlLoop.h"
 #include "communication/CommunicationHandler.h"
 #include "IO/LED.h"
-#include "Memory/memory.h"
 #include "drivers/I2C2.h"
 #include "Sensors/MS5837-30BA/depth_sensor.h"
-#include "drivers/SST25_flash/SST25_flash.h"
+#include "Config/config.h"
+#include "Flash/flash.h"
 
 void init(void)
 {
     initSystem();
+    FLASH_Init();
+    CONFIG_SaveToFlash();
+    CONFIG_LoadFromFlash();
+    
     ANALOG_Init();
     IMU_Init();
     CL_Init();
     //init_depth_sensor();
-    MEM_Init();
-    MEM_LoadSettings();
+
     COMHANDLER_Init();
     initScheduler();
     initTasks();
     ANALOG_beginConversion();
-    //   MEM_SaveSettings();
 }
 
 void enable()

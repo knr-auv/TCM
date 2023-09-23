@@ -24,11 +24,11 @@ set(SOURCES
     Sensors/MS5837-30BA/depth_sensor.c
     Sensors/analog_sensors.c
 
-    helpers/quaternions.c
-    helpers/PID.c
-    helpers/common.c
-    helpers/CommunicationProtocol/communication_protocol.c
+    Common/quaternions.c
+    Common/PID.c
+    Common/common.c
 
+    Config/config.c
     scheduler/scheduler.c
 
     tasks/tasks.c
@@ -37,7 +37,7 @@ set(SOURCES
     tasks/task_ReadAnalogSensors.c
 
     Config/Limits.c
-    Memory/memory.c
+    Flash/flash.c
 
     operation/ControlLoop.c
     operation/IMU.c
@@ -47,9 +47,8 @@ set(SOURCES
 
     Variables/variables.c
 
-    communication/CommunicationHandler.c
-    communication/tx_handler.c
-    communication/rx_handler.c
+    Communication/CommunicationHandler.c
+    Communication/protocol.c
 
 
     interrupts.c
