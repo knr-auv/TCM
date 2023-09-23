@@ -66,16 +66,24 @@ static void initCLOCK(void)
     plln = 252
 
     */
-    RCC->CR &= ~(RCC_CR_HSEON);
+   
     RCC->CR |= RCC_CR_HSION; // turn HSI on
     while (!(RCC->CR & RCC_CR_HSIRDY))
     {
-    };                       // wait for HSI ready
+    };                       
+    CLEAR_BIT(RCC->CFGR, RCC_CFGR_SW);
+    while ((RCC->CFGR & RCC_CFGR_SWS_HSI))
+    {
+    }; 
+    
+    RCC->CR &= ~(RCC_CR_HSEON);
+    RCC->CR &= ~(RCC_CR_PLLON | RCC_CR_PLLI2SON);
     RCC->CFGR = (uint32_t)0; // reset CFGR register - source clock is set as HSI by default
 
-    RCC->PLLCFGR = (uint32_t)0x24003010; // reset PLLCFGR register
+    RCC->PLLCFGR = (uint32_t)0; // reset PLLCFGR register
     RCC->CIR = (uint32_t)0;              // disable all interupts
-    RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLSRC);
+    CLEAR_BIT(RCC->PLLCFGR,RCC_PLLCFGR_PLLSRC);
+ 
     RCC->PLLCFGR |= RCC_PLLCFGR_PLLSRC_HSI;
     RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLM); // reset PLLM
     RCC->PLLCFGR |= RCC_PLLCFGR_PLLM_3;  // PLLM = 8
