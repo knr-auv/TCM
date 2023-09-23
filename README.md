@@ -21,8 +21,7 @@ The bit order is LSB first.
 |-----------------|------|
 | Header 0        | 0x69   |   
 | Header 1        | 0x68   |   
-| Payload length MSB |  byte  |  
-| Payload length LSB |   byte |
+| Payload length |  byte  |  
 |Message type      | byte|
 | Payload|0 - 500|
 |Checksum MSB|byte|
