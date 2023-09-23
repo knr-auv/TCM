@@ -3,7 +3,7 @@
 #include "time/time.h"
 #include "ControlLoop.h"
 #include "IO/actuators.h"
-#include "helpers/common.h"
+#include "Common/common.h"
 #include "scheduler/scheduler.h"
 #define TIMEOUT 1000000
 

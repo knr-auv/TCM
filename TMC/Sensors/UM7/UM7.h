@@ -1,7 +1,7 @@
 #ifndef UM7_H
 #define UM7_H
 #include <stdbool.h>
-#include "helpers/quaternions.h"
+#include "Common/quaternions.h"
 
 bool UM7_Init(void);
 bool UM7_NewData(void);

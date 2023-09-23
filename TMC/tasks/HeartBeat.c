@@ -18,6 +18,7 @@ void HB_Task(timeUs_t t)
     LED_HeartBeat_Toggle();
 	#ifdef HEART_BEAT_PACKET
 	if(enable_packet)
-	COMHANDLER_SendHeartBeat();
+	//COMHANDLER_SendHeartBeat();;
+	;
 	#endif
 }

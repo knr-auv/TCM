@@ -6,8 +6,20 @@
       "math.h": "c",
       "ieeefp.h": "c",
       "reent.h": "c",
-      "errno.h": "c"
+      "errno.h": "c",
+      "protocol.h": "c",
+      "config.h": "c",
+      "time.h": "c",
+      "stm32f4xx.h": "c",
+      "usart.h": "c",
+      "led.h": "c",
+      "stdbool.h": "c",
+      "common.h": "c",
+      "scheduler.h": "c",
+      "sst25_flash.h": "c",
+      "flash.h": "c"
     },
-    "ipynb.pasteImagesAsAttachments.enabled": true
+    "ipynb.pasteImagesAsAttachments.enabled": true,
+    "C_Cpp.errorSquiggles": "disabled"
   }
   

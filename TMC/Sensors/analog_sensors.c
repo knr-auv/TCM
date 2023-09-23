@@ -81,18 +81,18 @@ float ANALOG_onboardTemp(void){
     uint32_t sensor_data;
     avg_value(&sensor_data, SENSOR_ONBOARD_TEMP);
     volatile float read_val = (sensor_data/(float)4095)*ADC1_VREF;
-    return -66.875 + 218.75 * read_val/SHT3x_v;
+    return -66.875f + 218.75f * read_val/SHT3x_v;
 }
 float ANALOG_CPUTemp(void){
     uint32_t sensor_data;
     avg_value(&sensor_data, SENSOR_CPU_TEMP);
-    return  ((ADC1_VREF*sensor_data/(float)4095 - 0.76 ) / 0.0025) + 25;
+    return  ((ADC1_VREF*sensor_data/(float)4095 - 0.76f ) / 0.0025f) + 25;
 }
 
 float ANALOG_onboardHumidity(void){
     uint32_t sensor_data;
   avg_value(&sensor_data, SENSOR_ONBOARD_HUMIDITY);
-    return -12.5 + 125*(sensor_data/(float)4095)*ADC1_VREF/SHT3x_v;;
+    return -12.5f + 125.f*(sensor_data/(float)4095)*ADC1_VREF/SHT3x_v;;
 }
 void ANALOG_ProcesRAW()
 {

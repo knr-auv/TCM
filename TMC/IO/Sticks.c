@@ -5,11 +5,8 @@ float stick_input[16];
 
 timeUs_t LastUpdated = 0;
 
-void STICK_HandleNewInputFloat(float* data, uint16_t len)
-{
-    memcpy(stick_input, data, sizeof(float)*len);
-}
-void STICK_HandleNewInput(float* data, uint16_t len)
+
+void STICK_HandleNewInput(float* data, uint8_t len)
 {
     LastUpdated = micros();
     if(len>16)

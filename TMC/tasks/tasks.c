@@ -3,8 +3,7 @@
 #include "scheduler/scheduler.h"
 #include "Config/config.h"
 #include "IO/LED.h"
-#include "Config/config_tasks.h"
-
+#include "Config/default_config.h"
 #include "Sensors/MS5837-30BA/depth_sensor.h"
 #include "operation/ControlLoop.h"
 #include "communication/CommunicationHandler.h"
@@ -29,25 +28,25 @@ task_t tasks[TASK_COUNT] = {
 		{
 			.taskName = "SYSTEM",
 			.taskFun = taskSystem,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_SYSTEM_PERIOD_HZ),
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_SYSTEM_PERIOD_HZ),
 			.staticPriority = TASK_PRIORITY_LOW},
 	[TASK_READ_ANALOG_SENSORS] =
 		{
 			.taskName = "READ_ANALOG_SENSORS",
 			.taskFun = TASK_read_analog_sensors,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_READ_ANALOG_SENSORS_HZ),
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_READ_ANALOG_SENSORS_HZ),
 			.staticPriority = TASK_PRIORITY_LOW},
 	[TASK_TELEMETRY] =
 		{
 			.taskName = "TELEMETRY",
 			.taskFun = TASK_Telemetry,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_TELEMETRY_HZ),
-			.staticPriority = TASK_TELEMETRY_PRIORITY},
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_TELEMETRY_HZ),
+			.staticPriority = CONFIG_TASK_TELEMETRY_PRIORITY},
 	[TASK_CONTROL_LOOP] =
 		{
 			.taskName = "CONTROL_LOOP_TASK",
 			.taskFun = CL_TaskFun,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_PID_HZ),
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_PID_HZ),
 			.staticPriority = TASK_PRIORITY_REALTIME},
 
 	[TASK_COMM_HANDLER] =
@@ -55,7 +54,7 @@ task_t tasks[TASK_COUNT] = {
 			.taskName = "COMM HANDLER TASK",
 			.taskFun = COMHANDLER_Task,
 			.checkFun = COMHANDLER_CheckFun,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_COMM_HANDLER_HZ),
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_COMM_HANDLER_HZ),
 			.staticPriority = TASK_PRIORITY_REALTIME},
 	[TASK_LED_TEST] =
 		{
@@ -67,26 +66,26 @@ task_t tasks[TASK_COUNT] = {
 		{
 			.taskName = "TASK_AUTOMATIONS",
 			.taskFun = AUTOMATIONS_Task,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_AUTOMATIONS_HZ),
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_AUTOMATIONS_HZ),
 			.staticPriority = TASK_PRIORITY_HIGH},
 	[TASK_DIRECT_MOTORS_CTRL] =
 		{
 			.taskName = "TASK_DIRECT_MOTORS_CTRL",
 			.taskFun = DTCTRL_Task,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_DIRECT_MOTORS_CTRL_HZ),
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_DIRECT_MOTORS_CTRL_HZ),
 			.staticPriority = TASK_PRIORITY_HIGH},
 	[TASK_HEART_BEAT] =
 		{
 			.taskName = "TASK_HEART_BEAT",
 			.taskFun = HB_Task,
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_HEART_BEAT_HZ),
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_HEART_BEAT_HZ),
 			.staticPriority = TASK_PRIORITY_HIGH},
 	[TASK_READ_DEPTH_SENSOR] =
 		{
 			.taskName = "READ_DEPTH_SENSOR",
 			.taskFun = read_depth_sensor,
 			.checkFun = NULL, // it will be set in .taskFun
-			.desiredPeriod = TASK_PERIOD_HZ(TASK_READ_DEPTH_SENSOR_HZ),
+			.desiredPeriod = TASK_PERIOD_HZ(CONFIG_TASK_READ_DEPTH_SENSOR_HZ),
 			.staticPriority = TASK_PRIORITY_HIGH},
 
 };
