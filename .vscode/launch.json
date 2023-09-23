@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "LaunchSTMCubeProgrammer",
+      "name": "Debug STM-IDE",
       "type": "cppdbg",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -24,28 +24,24 @@
       },
       "preLaunchTask": "Flash",
       "svdPath": "${command:vscode-embedded.st.svd}/STM32F407.svd"
-    },
+    }, 
     {
-      "name": "LaunchOpenOCD",
-      "type": "cppdbg",
+      "type": "cortex-debug",
       "request": "launch",
+      "name": "Debug Cortex-debug",
+      "servertype": "openocd",
       "cwd": "${workspaceFolder}",
-      "program": "${workspaceFolder}/build/TMC/TMC.elf",
-      "MIMode": "gdb",
-      "miDebuggerPath": "arm-none-eabi-gdb",
-      "miDebuggerServerAddress": "localhost:3333",
-      "debugServerPath": "openocd",
-      "debugServerArgs": "-f ${workspaceFolder}/openocd.cfg",
-      "serverStarted": "Listening on port .* for gdb connections",
-      "filterStderr": true,
-      "stopAtConnect": true,
-      "stopAtEntry": true,
-      "hardwareBreakpoints": {
-          "require": true,
-          "limit": 2
+      "runToEntryPoint": "main",
+      "preLaunchTask": "Build",
+      "liveWatch": {
+        "enabled": true,
+        "samplesPerSecond": 2
       },
-      "preLaunchTask": "Flash",
+      "executable": "${workspaceFolder}/build/TMC/TMC.elf",
+      "configFiles": [
+        "${workspaceFolder}/openocd.cfg"
+      ],
       "svdPath": "${workspaceFolder}/STM32F4.svd"
-  }
+    }
   ]
 }
