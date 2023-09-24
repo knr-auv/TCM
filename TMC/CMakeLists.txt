@@ -49,7 +49,7 @@ set(SOURCES
 
     Communication/CommunicationHandler.c
     Communication/protocol.c
-
+    Communication/tx_handler.c
 
     interrupts.c
     time/time.c
