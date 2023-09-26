@@ -11,7 +11,7 @@
 #include "Sensors/MS5837-30BA/depth_sensor.h"
 #include "Config/config.h"
 #include "Flash/flash.h"
-
+#include "Variables/variables.h"
 void init(void)
 {
     initSystem();
@@ -23,7 +23,7 @@ void init(void)
     IMU_Init();
     CL_Init();
     //init_depth_sensor();
-
+    VAR_Init();
     COMHANDLER_Init();
     initScheduler();
     initTasks();

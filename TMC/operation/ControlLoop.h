@@ -2,6 +2,7 @@
 #include "IO/actuators.h"
 #include "time/time.h"
 #include "Common/PID.h"
+#include "Config/config.h"
 typedef enum 
 {
     CL_STATUS_ARMED,
@@ -30,5 +31,10 @@ cl_mode_e CL_GetMode();
 float* CL_GetActuatorsMatrix();
 void CL_SetActuatorMatrix(float* data, uint16_t len);
 
-void CL_GetPID(PID_t* roll,float* roll_gain, PID_t* pitch, float* pitch_gain, PID_t* yaw, float* yaw_gain, PID_t* vertical);
-void CL_SetPID(PID_t* roll,float roll_gain, PID_t* pitch, float pitch_gain, PID_t* yaw, float yaw_gain, PID_t* vertical);
+CONFIG_PID_Container_t CL_GetPID(void);
+
+void CL_SetPID(float* buffer, uint8_t size);
+
+void CL_SetLimits(LIMITS_t Limits);
+
+LIMITS_t* CL_GetLimits(void);

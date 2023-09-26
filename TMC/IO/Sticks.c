@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "time/time.h"
-float stick_input[16];
+static float stick_input[16];
 
 timeUs_t LastUpdated = 0;
 

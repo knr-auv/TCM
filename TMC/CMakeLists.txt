@@ -46,6 +46,7 @@ set(SOURCES
     operation/ServiceMode.c
 
     Variables/variables.c
+    Variables/register_variables.c
 
     Communication/CommunicationHandler.c
     Communication/protocol.c

@@ -1,4 +1,5 @@
 #include "variables.h"
+
 #define FLOAT_WRONG_INDEX(index) ((index > VAR_SYS_COUNT)||(index<0))
 
 static float* var_sys_float[VAR_SYS_COUNT];
@@ -24,3 +25,9 @@ float VAR_GetSysFloat(VAR_sys_float_e name)
         return 0;
     return *var_sys_float[name];
 }
+void register_variables();
+void VAR_Init()
+{
+register_variables();
+}
+

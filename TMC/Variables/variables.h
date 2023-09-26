@@ -35,6 +35,10 @@ typedef enum
     VAR_SYS_DESIRED_GYRO_p,
     VAR_SYS_DESIRED_GYRO_y,
 
+    VAR_SYS_DESIRED_ATTITUDE_E_r,
+    VAR_SYS_DESIRED_ATTITUDE_E_p,
+    VAR_SYS_DESIRED_ATTITUDE_E_y,
+
     VAR_SYS_DESIRED_ATTITUDE_Q_r,
     VAR_SYS_DESIRED_ATTITUDE_Q_i,
     VAR_SYS_DESIRED_ATTITUDE_Q_j,
@@ -73,4 +77,4 @@ typedef enum
 void VAR_SetSysFloat(float *value, VAR_sys_float_e name);
 float *VAR_GetSysFloatPtr(VAR_sys_float_e name);
 float VAR_GetSysFloat(VAR_sys_float_e name);
-
+void VAR_Init();

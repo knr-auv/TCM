@@ -7,6 +7,8 @@
 void Q_normalize(quaternion_t *Q)
 {
     float norm = Q_norm(Q);
+    if(norm == 0)
+        return;
     Q->i /= norm;
     Q->j /= norm;
     Q->k /= norm;

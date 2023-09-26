@@ -21,7 +21,7 @@ UART3 is marked as external UART
 */
 #define USART1_BAUD 115200
 #define USART2_BAUD 115200 
-#define USART3_BAUD 115200
+#define USART3_BAUD 2000000
 
 #define CONFIG_COMM_HANDLER_BUFFER_LEN     254
 #define CONFIG_COMM_HANDLER_USART          UART3
@@ -35,17 +35,32 @@ UART3 is marked as external UART
 #define AUTOMATIONS_STICK_TIMEOUT           TIME_MS(400)
 #define AUTOMATIONS_COMMHANDLER_TIMEOUT     TIME_MS(400)
 
-
+typedef struct
+{
+    float r_p;
+    float r_i;
+    float r_d;
+    float r_IMax;
+    float roll_gain;
+    float p_p;
+    float p_i;
+    float p_d;
+    float p_IMax;
+    float pitch_gain;
+    float y_p;
+    float y_i;
+    float y_d;
+    float y_IMax;
+    float yaw_gain;
+    float v_p;
+    float v_i;
+    float v_d;
+    float v_IMax;
+}CONFIG_PID_Container_t;
 
 typedef struct 
 {
-    PID_t pid_roll;
-    float roll_gain;
-    PID_t pid_pitch;
-    float pitch_gain;
-    PID_t pid_yaw;
-    float yaw_gain;
-    PID_t pid_depth;
+    CONFIG_PID_Container_t PID;
     LIMITS_t limits;
     float ctrl_matrix[6*8];
     uint32_t task_frequency[TASK_COUNT];

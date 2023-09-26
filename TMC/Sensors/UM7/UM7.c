@@ -7,14 +7,13 @@
 #include "drivers/USART.h"
 #include "time/time.h"
 
- quaternion_t position;
- float angular_velocity[3];
-bool newData = false;
+static quaternion_t position;
+static float angular_velocity[3];
+static bool newData = false;
 static uint8_t rx_buffer[CONFIG_UM7_RX_BUFFER_SIZE];
 static uint8_t tx_buffer[CONFIG_UM7_TX_BUFFER_SIZE];
- UM7_packet_t packet;
-
- static USART_t uart;
+static UM7_packet_t packet;
+static USART_t uart;
 
 bool UM7_NewData(void)
 {

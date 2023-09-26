@@ -42,7 +42,7 @@ Control:
 
 static float* control_actuators_matrix;
 static float control_out[CONTROL_OUTPUTS];
-float actuators_out[ACTUATORS_COUNT];
+static float actuators_out[ACTUATORS_COUNT];
 uint16_t PWMout[ACTUATORS_COUNT];
 
 static cl_status_e status;
@@ -69,7 +69,6 @@ static timeUs_t last_time = 0;
 
 void StableMode(float dt);
 void AcroMode(float dt);
-void AutonomyMode(float dt);
 void update_outputs();
 void set_motors();
 
@@ -84,6 +83,7 @@ void (*modeFun[CL_MODE_COUNT])(float dt)=
 void CL_Init()
 {
     CONFIG_Container_t* config = CONFIG_GetCurrentConfig();
+    
     status = CL_STATUS_DISARMED;
     mode = CL_MODE_STABLE;
     // memcpy(control_actuators_matrix, config->ctrl_matrix, ACTUATORS_COUNT*CONTROL_OUTPUTS*sizeof(float));
@@ -91,14 +91,14 @@ void CL_Init()
     control_actuators_matrix = config->ctrl_matrix;
     limits = &config->limits;
     ang_vel= IMU_GetAngVelPointer();
-    PID_initialize(&pid_roll, config->pid_roll.P, config->pid_roll.I, config->pid_roll.D, config->pid_roll.IMax);
-    PID_initialize(&pid_pitch, config->pid_pitch.P, config->pid_pitch.I, config->pid_pitch.D, config->pid_pitch.IMax);
-    PID_initialize(&pid_yaw, config->pid_yaw.P, config->pid_yaw.I, config->pid_yaw.D, config->pid_yaw.IMax);
+    PID_initialize(&pid_roll, config->PID.r_p, config->PID.r_i, config->PID.r_d, config->PID.r_IMax);
+    PID_initialize(&pid_pitch, config->PID.p_p, config->PID.p_i, config->PID.p_d, config->PID.p_IMax);
+    PID_initialize(&pid_yaw, config->PID.y_p, config->PID.y_i, config->PID.y_d, config->PID.y_IMax);
     initActuators();
 
-    pitch_level_gain = config->pitch_gain;
-    roll_level_gain = config->roll_gain;
-    yaw_level_gain = config->yaw_gain;
+    pitch_level_gain = config->PID.pitch_gain;
+    roll_level_gain = config->PID.roll_gain;
+    yaw_level_gain = config->PID.yaw_gain;
 
     VAR_SetSysFloat(&Qref.r, VAR_SYS_DESIRED_ATTITUDE_Q_r);
     VAR_SetSysFloat(&Qref.i, VAR_SYS_DESIRED_ATTITUDE_Q_i);
@@ -116,6 +116,7 @@ void CL_Init()
     VAR_SetSysFloat(&ref_ang_velocity[0], VAR_SYS_DESIRED_GYRO_r);
     VAR_SetSysFloat(&ref_ang_velocity[1], VAR_SYS_DESIRED_GYRO_p);
     VAR_SetSysFloat(&ref_ang_velocity[2], VAR_SYS_DESIRED_GYRO_y);
+
 
     for(uint8_t i =0; i< ACTUATORS_COUNT; i++)
     {
@@ -179,7 +180,6 @@ void CL_TaskFun(timeUs_t t)
 
 void update_outputs()
 {
-
     COMMON_mat_vec_mul(control_actuators_matrix, control_out, actuators_out, ACTUATORS_COUNT, CONTROL_OUTPUTS);
     COMMON_linear_saturation(actuators_out,ACTUATORS_COUNT, MAX_OUTPUT);    
 }
@@ -230,23 +230,66 @@ void CL_SetActuatorMatrix(float* data, uint16_t len)
         control_actuators_matrix[i] = data[i];
 }
 
-void CL_GetPID(PID_t* roll,float* roll_gain, PID_t* pitch, float* pitch_gain, PID_t* yaw, float* yaw_gain, PID_t* vertical)
+CONFIG_PID_Container_t CL_GetPID(void)
 {
-    memcpy(roll, &pid_roll,sizeof(PID_t));
-    memcpy(pitch, &pid_pitch,sizeof(PID_t));
-    memcpy(yaw, &pid_yaw,sizeof(PID_t));
-    memcpy(vertical, &pid_vertical,sizeof(PID_t));
-    *roll_gain = roll_level_gain;
-    *pitch_gain = pitch_level_gain;
-    *yaw_gain = yaw_level_gain;
+    CONFIG_PID_Container_t p;
+
+    p.p_p = pid_pitch.P;
+    p.p_i = pid_pitch.I;
+    p.p_d = pid_pitch.D;
+    p.p_IMax = pid_pitch.IMax;
+
+    p.r_p = pid_roll.P;
+    p.r_i = pid_roll.I;
+    p.r_d = pid_roll.D;
+    p.r_IMax = pid_roll.IMax;
+
+    p.y_p = pid_yaw.P;
+    p.y_i = pid_yaw.I;
+    p.y_d = pid_yaw.D;
+    p.y_IMax = pid_yaw.IMax;
+
+    p.v_p = pid_vertical.P;
+    p.v_i = pid_vertical.I;
+    p.v_d = pid_vertical.D;
+    p.v_IMax = pid_vertical.IMax;
+
+    p.roll_gain = roll_level_gain;
+    p.pitch_gain = pitch_level_gain;
+    p.yaw_gain = yaw_level_gain;
+    return p;
 }
-void CL_SetPID(PID_t* roll,float roll_gain, PID_t* pitch, float pitch_gain, PID_t* yaw, float yaw_gain, PID_t* vertical)
+void CL_SetPID(float* buffer, uint8_t size)
 {
-    memcpy(&pid_roll, roll,sizeof(PID_t));
-    memcpy(&pid_pitch, pitch,sizeof(PID_t));
-    memcpy(&pid_yaw, yaw,sizeof(PID_t));
-    memcpy(&pid_vertical, vertical,sizeof(PID_t));
-    roll_level_gain = roll_gain;
-    pitch_level_gain = pitch_gain;
-    yaw_level_gain = yaw_gain;
+    if(size!=19)
+        return;
+    pid_roll.P = buffer[0];
+    pid_roll.I = buffer[1];
+    pid_roll.D = buffer[2];
+    pid_roll.IMax = buffer[3];
+    roll_level_gain = buffer[4];
+    pid_pitch.P = buffer[5];
+    pid_pitch.I = buffer[6];
+    pid_pitch.D = buffer[7];
+    pid_pitch.IMax = buffer[8];
+    pitch_level_gain = buffer[9];
+    pid_yaw.P = buffer[10];
+    pid_yaw.I = buffer[11];
+    pid_yaw.D = buffer[12];
+    pid_yaw.IMax = buffer[13];
+    yaw_level_gain = buffer[14];
+    pid_vertical.P = buffer[15];
+    pid_vertical.I = buffer[16];
+    pid_vertical.D = buffer[17];
+    pid_vertical.IMax = buffer[18];
+}
+
+void CL_SetLimits(LIMITS_t Limits)
+{
+memcpy(limits, &Limits,sizeof(LIMITS_t));
+}
+
+LIMITS_t* CL_GetLimits(void)
+{
+return limits;
 }

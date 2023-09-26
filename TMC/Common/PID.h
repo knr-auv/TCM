@@ -6,9 +6,9 @@ typedef struct
     float P;
     float I;
     float D;
+    float IMax;
     float ITerm;
     float lastError;
-    float IMax;
     float output;
 } PID_t;
 
